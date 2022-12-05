@@ -45,8 +45,7 @@ CREATE TABLE IF NOT EXISTS `capstone`.`vehicle` (
   `fuelType` VARCHAR(255) NOT NULL,
   `purchasePrice` DOUBLE NOT NULL,
   `color` VARCHAR(45) NOT NULL,
-  `premium` DOUBLE NOT NULL,
-  PRIMARY KEY (`policyNumber`));
+  `premium` DOUBLE NOT NULL);
 
 CREATE TABLE IF NOT EXISTS `capstone`.`claim` (
   `claimNumber` VARCHAR(255) NOT NULL,

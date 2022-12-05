@@ -7,8 +7,9 @@
  * @author Lmarl Saria
  * 
  * Date Created: June 28, 2022
- * Date Modified: September 28, 2022
+ * Date Modified: November 23, 2022
  * 
+ * -- add database implementation
  * -- update comments
  * -- refactoring (additional user validation)
  * -- enhanced switch (JAVA 17)
@@ -87,8 +88,8 @@ public class CustomerAccount {
                     "`fuelType` VARCHAR(255) NOT NULL, \r\n" +
                     "`purchasePrice` DOUBLE NOT NULL, \r\n" +
                     "`color` VARCHAR(45) NOT NULL, \r\n" +
-                    "`premium` DOUBLE NOT NULL, \r\n" +
-                    "PRIMARY KEY (`policyNumber`));";
+                    "`premium` DOUBLE NOT NULL ) \r\n" +
+                    "";
 
             String claimTable = "CREATE TABLE IF NOT EXISTS `capstone`.`claim` ( \r\n" +
                     "`claimNumber` VARCHAR(255) NOT NULL,  \r\n" +
