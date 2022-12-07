@@ -7,11 +7,11 @@
  * @author Lmarl Saria
  * 
  * Date Created: June 28, 2022
- * Date Modified: November 23, 2022
+ * Date Modified: December 5, 2022
  * 
  * -- add database implementation
  * -- update comments
- * -- refactoring (additional user validation)
+ * -- refactoring (additional user validation, fixed errors in SQL)
  * -- enhanced switch (JAVA 17)
  * -- additional display for search account (5.5 and 5.6)
  * -- using conditional formatting
@@ -34,7 +34,7 @@ public class CustomerAccount {
 
     // --> CONNECTION
     public void setConnection(Connection conn) {
-        CustomerAccount.connection = conn;
+        this.connection = conn;
     }
 
     public Connection getConnection() {
@@ -79,6 +79,8 @@ public class CustomerAccount {
                     "`acctNo` INT NOT NULL, \r\n" +
                     "PRIMARY KEY (`policyNumber`));";
 
+            // FIXED: when creating 2 or more vehicles, it will cause error due to duplicate
+            // key
             String vehicleTable = "CREATE TABLE IF NOT EXISTS `capstone`.`vehicle` ( \r\n" +
                     "`policyNumber` INT NOT NULL, \r\n" +
                     "`make` VARCHAR(255) NOT NULL, \r\n" +
@@ -154,7 +156,7 @@ public class CustomerAccount {
         String input;
         boolean flag = false;
         do {
-            System.out.printf("%-24s", "Account Number:");
+            System.out.printf("%-30s", "Account Number:");
             input = scan.nextLine();
 
             if (input.isBlank()) {
@@ -238,11 +240,12 @@ public class CustomerAccount {
     // ---> FUNCTIONS
     // 1.0 ENTER CUSTOMER ACCOUNT
     public void create() {
+        String pattern = "[a-zA-Z\\s]+";
         System.out.println("\nCREATE A NEW CUSTOMER ACCOUNT\n");
         accountNumber(); // input (type, pattern)
-        this.firstName = valid.validateName("First Name:");
-        this.lastName = valid.validateName("Last Name:");
-        this.address = valid.validateAddress();
+        this.firstName = valid.validateString("First Name:", pattern);
+        this.lastName = valid.validateString("Last Name:", pattern);
+        this.address = valid.validateString("Address:", pattern);
         confirm(); // --> GO TO 1.2
     }
 
