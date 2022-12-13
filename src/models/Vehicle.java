@@ -30,10 +30,11 @@ public class Vehicle extends Policy {
 	private double premium;
 	private int vehicleNo;
 
-	
-	/* 	in this method, every input has name and pattern, it will find their respective
-	*	case via switch, after the user prompt the enter input, it will validate 
-	*/
+	/*
+	 * in this method, every input has name and pattern, it will find their
+	 * respective
+	 * case via switch, after the user prompt the enter input, it will validate
+	 */
 	public void input(String type) {
 		String choice = type;
 		String input = null;
@@ -41,111 +42,67 @@ public class Vehicle extends Policy {
 		String pattern = null;
 
 		switch (choice) {
-		case "Make/Brand", "Model", "Color" -> {
-			do {
-				if (type == "Make/Brand") {
-					System.out.print(type + ":\t\t\t");
-				} else {
-					System.out.print(type + ":\t\t\t\t");
-				}
-				input = scan.nextLine();
+			case "Type" -> {
+				pattern = "[1-4]{1}";
+				do {
+					System.out.println("\nType: [1] 4-door sedan, [2] 2-door sports car, [3] SUV, or [4] truck");
+					System.out.print("Select:\t\t\t\t");
+					input = scan.nextLine();
 
-				if (input.isBlank()) {
-					System.out.println(type + " is empty!\n");
-				} else {
-					switch (type) {
-						case "Make/Brand" -> {
-							this.make = input;
+					if (input.isBlank()) {
+						System.out.println(type + " is empty!\n");
+					} else if (!input.matches(pattern)) {
+						System.out.println("Invalid input!\n");
+					} else {
+						switch (input) {
+							case "1" -> setType("4-door sedan");
+							case "2" -> setType("2-door sports car");
+							case "3" -> setType("SUV");
+							case "4" -> setType("truck");
 						}
-						case "Model" -> {
-							this.model = input;
+						flag = true;
+					}
+				} while (flag == false);
+				break;
+			}
+			case "Fuel Type" -> {
+				pattern = "[1-3]{1}";
+				do {
+					System.out.println("\nFuel Type: [1] Diesel, [2] Electric, or [3] Petrol");
+					System.out.print("Select:\t\t\t\t");
+					input = scan.nextLine();
+
+					if (input.isBlank()) {
+						System.out.println(type + " is empty!\n");
+					} else if (!input.matches(pattern)) {
+						System.out.println("Invalid input!\n");
+					} else {
+						switch (input) {
+							case "1" -> setFuelType("Diesel");
+							case "2" -> setFuelType("Electric");
+							case "3" -> setFuelType("Petrol");
 						}
-						case "Color" -> {
-							this.color = input;
-						}
+						flag = true;
 					}
-					flag = true;
-				}
-			} while (flag == false);
-			break;
-		}
-		case "Year" -> {
-			pattern = "[0-9]{4}";
-			do {
-				System.out.print(choice + ":\t\t\t\t");
-				input = scan.nextLine();
+				} while (flag == false);
+				break;
+			}
+			case "Purchase Price" -> {
+				pattern = "(0|([1-9][0-9]*))(\\.[0-9]{1,2}+)?$";
+				do {
+					System.out.print("\nPurchase Price:\t\t\t$");
+					input = scan.nextLine();
 
-				if (input.isBlank()) {
-					System.out.println(type + " is empty!\n");
-				} else if (!input.matches(pattern)) {
-					System.out.println("Invalid input!\n");
-				} else {
-					this.year = Integer.parseInt(input);
-					flag = true;
-				}
-			} while (flag == false);
-		}
-		case "Type" -> {
-			pattern = "[1-4]{1}";
-			do {
-				System.out.println("\nType: [1] 4-door sedan, [2] 2-door sports car, [3] SUV, or [4] truck");
-				System.out.print("Select:\t\t\t\t");
-				input = scan.nextLine();
-
-				if (input.isBlank()) {
-					System.out.println(type + " is empty!\n");
-				} else if (!input.matches(pattern)) {
-					System.out.println("Invalid input!\n");
-				} else {
-					switch (input) {
-						case "1" ->	setType("4-door sedan");
-						case "2" ->	setType("2-door sports car");
-						case "3" ->	setType("SUV");
-						case "4" ->	setType("truck");
+					if (input.isBlank()) {
+						System.out.println(type + "is empty!\n");
+					} else if (!input.matches(pattern)) {
+						System.out.println("Invalid input!\n");
+					} else {
+						this.price = Double.parseDouble(input);
+						flag = true;
 					}
-					flag = true;
-				}
-			} while (flag == false);
-			break;
-		}
-		case "Fuel Type" -> {
-			pattern = "[1-3]{1}";
-			do {
-				System.out.println("\nFuel Type: [1] Diesel, [2] Electric, or [3] Petrol");
-				System.out.print("Select:\t\t\t\t");
-				input = scan.nextLine();
-
-				if (input.isBlank()) {
-					System.out.println(type + " is empty!\n");
-				} else if (!input.matches(pattern)) {
-					System.out.println("Invalid input!\n");
-				} else {
-					switch (input) {
-					case "1" ->	setFuelType("Diesel");
-					case "2" ->	setFuelType("Electric");
-					case "3" ->	setFuelType("Petrol");
-					}
-					flag = true;
-				}
-			} while (flag == false);
-			break;
-		}
-		case "Purchase Price" -> {
-			pattern = "(0|([1-9][0-9]*))(\\.[0-9]{1,2}+)?$";
-			do {
-				System.out.print("\nPurchase Price:\t\t\t$");
-				input = scan.nextLine();
-
-				if (input.isBlank()) {
-					System.out.println(type + "is empty!\n");
-				} else if (!input.matches(pattern)) {
-					System.out.println("Invalid input!\n");
-				} else {
-					this.price = Double.parseDouble(input);
-					flag = true;
-				}
-			} while (flag == false);
-		}
+				} while (flag == false);
+			}
 		}
 
 		flag = false;
@@ -164,13 +121,13 @@ public class Vehicle extends Policy {
 	@Override
 	public void addVehicle() {
 		System.out.printf("\nVehicle no. #%d\n", vehicleNo);
-		input("Make/Brand");
-		input("Model");
-		input("Year");
+		this.make = valid.validateString("Make/Brand: ", "[a-zA-Z\s]+");
+		this.model = valid.validateString("Model: ", "[a-zA-Z\s]+");
+		this.year = Integer.parseInt(valid.validateString("Year: ", "[0-9]{4}"));
 		input("Type");
 		input("Fuel Type");
 		input("Purchase Price");
-		input("Color");
+		this.color = valid.validateString("Color: ", "[a-zA-Z\s]+");
 
 		computePremium();
 	}
@@ -185,7 +142,7 @@ public class Vehicle extends Policy {
 
 	public void computePremium() {
 		re.computedPremium(price, year);
-		this.premium = (float) re.getPremium();
+		this.premium = re.getPremium();
 	}
 
 	// 2.6.2 SUBMIT

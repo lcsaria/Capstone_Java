@@ -40,72 +40,29 @@ public class Policy extends CustomerAccount {
 	 * case via switch, after the user prompt the enter input, it will validate
 	 */
 	public void input(String type, String pattern) {
-		String choice = type;
+
+	}
+
+	public void inputPolicyNumber() {
 		String input = null;
 		boolean flag = false;
 
-		switch (choice) {
-			// 2.1 ENTER ACCOUNT NUMBER
-			// 2.2.1 ENTER POLICY NUMBER
-			case "Policy Number" -> {
-				do {
-					System.out.printf("%-30s", "Enter policy number (XXXXXX):");
-					input = scan.nextLine();
+		do {
+			System.out.printf("%-30s", "Enter policy number (XXXXXX):");
+			input = scan.nextLine();
 
-					delay(1000);
-					if (input.isBlank()) {
-						System.out.println(type + " is empty!\n");
-					} else if (!input.matches(pattern)) {
-						System.out.println("Invalid input!\n");
-					} else if (validatePolicyNumber(input) != 0) {
-						System.out.println("Policy #" + input + " exists!!\n");
-					} else {
-						this.policyNumber = input;
-						flag = true;
-					}
-				} while (flag == false);
+			delay(1000);
+			if (input.isBlank()) {
+				System.out.println("Policy number is empty!\n");
+			} else if (!input.matches("[0-9]{6}")) {
+				System.out.println("Invalid input!\n");
+			} else if (validatePolicyNumber(input) != 0) {
+				System.out.println("Policy #" + input + " exists!!\n");
+			} else {
+				this.policyNumber = input;
+				flag = true;
 			}
-
-			// 2.2.1 ENTER POLICY NUMBER
-			// 6.1 ENTER POLICY NUMBER
-			case "Search Policy" -> {
-				do {
-					System.out.print("Enter policy number (XXXXXX):\t");
-					input = scan.nextLine();
-
-					if (input.isBlank()) {
-						System.out.println(type + " is empty!\n");
-					} else if (!input.matches(pattern)) {
-						System.out.println("Invalid input!\n");
-					} else {
-						this.policyNumber = input;
-						flag = true;
-					}
-				} while (flag == false);
-			}
-			// 3.
-			case "Cancel Policy" -> {
-				do {
-					System.out.print("Enter policy number (XXXXXX):\t");
-					input = scan.nextLine();
-
-					if (input.isBlank()) {
-						System.out.println("Policy number is empty!\n");
-					} else if (!input.matches(pattern)) {
-						System.out.println("Invalid input!\n");
-					} else {
-						this.policyNumber = input;
-						flag = true;
-					}
-				} while (flag == false);
-			}
-		}
-
-		flag = false;
-		type = "";
-		pattern = "";
-		choice = "";
-		input = "";
+		} while (flag == false);
 	}
 
 	// VALIDATE POLICY NUMBER
@@ -177,7 +134,7 @@ public class Policy extends CustomerAccount {
 	// 2.2 CREATE POLICY
 	public void createPolicy(String accountNumber) {
 		System.out.println("\nCREATING POLICY");
-		input("Policy Number", "[0-9]{6}");
+		inputPolicyNumber();
 		// 2.2.2 ENTER EFFECTIVE DATE
 		this.effectiveDate = valid.validateString("Effective Date (YYYY-MM-DD): ", "[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}");
 		getExpirationDate(); // GO TO 2.2.3
@@ -314,12 +271,13 @@ public class Policy extends CustomerAccount {
 	// 3.0 SEARCH POLICY TO BE CANCEL
 	public void cancelPolicy() {
 		System.out.println("\nCANCEL POLICY");
-		input("Cancel Policy", "[0-9]{6}");
+		this.policyNumber = valid.validateString("Enter policy number (XXXXXX):", "[0-9]{6}");
 		getPolicyInformation(); // GO TO 3.1
 	}
 
 	// 3.1 GET SPECIFIC POLICY INFORMATION
 	public void getPolicyInformation() {
+		delay(2000);
 		boolean status;
 		String sql = "SELECT * from policy WHERE policyNumber=?";
 
@@ -332,7 +290,7 @@ public class Policy extends CustomerAccount {
 			if (result.next()) {
 				do {
 					int pNo = result.getInt("policyNumber");
-					String effectiveDate = result.getString("effectiveDate");
+					String effective = result.getString("effectiveDate");
 					String expireDate = result.getString("expirationDate");
 					status = result.getBoolean("status");
 
@@ -343,7 +301,7 @@ public class Policy extends CustomerAccount {
 						break;
 					}
 					System.out.printf("\nPolicy #%06d\t\t\t", pNo);
-					System.out.println("\nEffective Date:\t\t\t" + effectiveDate);
+					System.out.println("\nEffective Date:\t\t\t" + effective);
 					System.out.println("Expiration Date:\t\t" + expireDate);
 
 					confirmCancel(); // GO TO 3.3
@@ -403,7 +361,7 @@ public class Policy extends CustomerAccount {
 	// 6.1 SEARCH POLICY
 	public void search() {
 		System.out.println("\nSEARCH POLICY");
-		input("Search Policy", "[0-9]{1,6}");
+		this.policyNumber = valid.validateString("Enter policy number (XXXXXX):", "[0-9]{6}");
 		displayPolicy();
 	}
 
@@ -419,9 +377,9 @@ public class Policy extends CustomerAccount {
 			if (result.next()) {
 				do {
 					String policyNo = result.getString("policyNumber");
-					String effectiveDate = result.getString("effectiveDate");
+					String effective = result.getString("effectiveDate");
 					String expireDate = result.getString("expirationDate");
-					String policyHolder = result.getString("policyHolder");
+					String holder = result.getString("policyHolder");
 					int vehicles = result.getInt("vehicles");
 					Double prem = result.getDouble("premium");
 					Boolean status = result.getBoolean("status");
@@ -443,7 +401,7 @@ public class Policy extends CustomerAccount {
 					System.out.printf(formatHead, "Effective Date", "Expiration Date", "Policy Holder", "Vehicles",
 							"Premium Charge", "Status");
 					createBar("policy"); // GO TO 6.A.1
-					System.out.printf(formatBody, effectiveDate, expireDate, policyHolder, vehicles, prem,
+					System.out.printf(formatBody, effective, expireDate, holder, vehicles, prem,
 							(status ? "ACTIVE" : "NOT ACTIVE"));
 					createBar("policy");
 					delay(1000);
@@ -464,7 +422,6 @@ public class Policy extends CustomerAccount {
 
 	// 6.3 TABLE FOR POLICY HOLDER DETAILS
 	public void showPolicyHolder(String policyNumber) {
-
 		String format = "|%1$-20s|%2$-20s|%3$-40s|%4$-20s|%5$-20s|\n";
 		createBar("policy_holder");// 6.A.2
 		System.out.printf(format, "First Name", "Last Name", "Address", "Driver License#", "Date Issued"); // header
@@ -498,10 +455,8 @@ public class Policy extends CustomerAccount {
 
 	// 6.4 TABLE FOR VEHICLE DETAILS
 	public void showVehicle(String policyNumber) {
-		String formatHead = "|%1$-15s|%2$-15s|%3$-15s|%4$-20s|%5$-15s|%6$-20s|%7$-15s|%8$-20s|\n"; // set header format
-		String formatBody = "|%1$-15s|%2$-15s|%3$-15s|%4$-20s|%5$-15s|$%6$-19.2f|%7$-15s|$%8$-19.2f|\n"; // set body
-																											// format
-
+		String formatHead = "|%1$-15s|%2$-15s|%3$-15s|%4$-20s|%5$-15s|%6$-20s|%7$-15s|%8$-20s|\n";
+		String formatBody = "|%1$-15s|%2$-15s|%3$-15s|%4$-20s|%5$-15s|$%6$-19.2f|%7$-15s|$%8$-19.2f|\n";
 		String sql = "SELECT * from vehicle WHERE policyNumber=?";
 		createBar("vehicle"); // 6.A.3
 		System.out.printf(formatHead, "Make/Brand", "Model", "Year", "Type", "Fuel Type", "Purchase Price", "Color",
@@ -541,7 +496,7 @@ public class Policy extends CustomerAccount {
 
 		switch (type) {
 			// 6.A.1 POLICY
-			case "policy": {
+			case "policy" -> {
 				for (int count = 0; count <= LENGTH_POLICY; count++) {
 					if (count == 0 || count == LENGTH_POLICY) {
 						System.out.print("+");
@@ -550,10 +505,9 @@ public class Policy extends CustomerAccount {
 					}
 				}
 				System.out.println();
-				break;
 			}
 			// 6.A.2 POLICY HOLDER
-			case "policy_holder": {
+			case "policy_holder" -> {
 				for (int count = 0; count <= LENGTH_POLICY_HOLDER; count++) {
 					if (count == 0 || count == LENGTH_POLICY_HOLDER) {
 						System.out.print("+");
@@ -562,10 +516,9 @@ public class Policy extends CustomerAccount {
 					}
 				}
 				System.out.println();
-				break;
 			}
 			// 6.A.3 VEHICLES
-			case "vehicle": {
+			case "vehicle" -> {
 				for (int count = 0; count <= LENGTH_VEHICLES; count++) {
 					if (count == 0 || count == LENGTH_VEHICLES) {
 						System.out.print("+");
@@ -574,7 +527,6 @@ public class Policy extends CustomerAccount {
 					}
 				}
 				System.out.println();
-				break;
 			}
 		}
 	}

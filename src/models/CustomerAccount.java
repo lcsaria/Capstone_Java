@@ -23,7 +23,6 @@ import java.sql.*;
 import java.util.*;
 
 public class CustomerAccount {
-    static Policy p = new Policy();
     static Validation valid = new Validation();
     static Connection connection = null;
     static Scanner scan = new Scanner(System.in);
@@ -313,8 +312,8 @@ public class CustomerAccount {
     // 5.1 SEARCH CUSTOMER ACCOUNT
     public void search() {
         System.out.println("\nSEARCH CUSTOMER ACCOUNT");
-        this.firstName = valid.validateName("First Name:");
-        this.lastName = valid.validateName("Last Name:");
+        this.firstName = valid.validateString("First Name:", "[a-zA-Z\\s]+");
+        this.lastName = valid.validateString("Last Name:", "[a-zA-Z\\s]+");
 
         delay(1000);
         String sql = "SELECT * from customer_account where firstName=? and lastName=?";
@@ -415,11 +414,11 @@ public class CustomerAccount {
                     String policyNo = String.format("%06d", result.getInt("policyNumber"));
                     String first = result.getString("firstName");
                     String last = result.getString("lastName");
-                    String address = result.getString("address");
+                    String addr = result.getString("address");
                     String licenseNo = result.getString("driverLicenseNumber");
                     String date = result.getString("dateIssued");
 
-                    System.out.printf(format, policyNo, first, last, address, licenseNo, date);
+                    System.out.printf(format, policyNo, first, last, addr, licenseNo, date);
                     bar3();
                 } while (result.next());
             } else {

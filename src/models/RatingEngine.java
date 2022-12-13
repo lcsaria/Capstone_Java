@@ -29,11 +29,11 @@ public class RatingEngine {
 	final int TODAY = Calendar.getInstance().get(Calendar.YEAR);
 
 	/*
-	 * CALCULATE THE PREMIUM USING FORMULA BELOW: 
-	 * P (premium) = (VP x VPF) + ((VP/100)/DLX) 
-	 * P = calculated premium 
-	 * VP = vehicle purchase price 
-	 * VPF = vehicle price factor 
+	 * CALCULATE THE PREMIUM USING FORMULA BELOW:
+	 * P (premium) = (VP x VPF) + ((VP/100)/DLX)
+	 * P = calculated premium
+	 * VP = vehicle purchase price
+	 * VPF = vehicle price factor
 	 * DLX = num of years since driver license was first issued
 	 */
 	public float computedPremium(double premium, int year) {
@@ -44,7 +44,8 @@ public class RatingEngine {
 		return (float) calculatedPremium;
 	}
 
-	// compute the number of years since driver license was first issued
+	// The setDLX() method computes the number of years since driver license was
+	// first issued.
 	public double setDLX() {
 		String dateIssued = PolicyHolder.dateIssued;
 		String[] date = dateIssued.split("-"); // split the date by "-" (YYYY-MM-DD)
@@ -58,6 +59,7 @@ public class RatingEngine {
 		return years;
 	}
 
+	// The setVPF() method computes the vehicle price factor.
 	public void setVPF(int year) {
 		int age = TODAY - year; // get the age of the car
 		if (age < 1) {
@@ -79,14 +81,14 @@ public class RatingEngine {
 		}
 	}
 
-	// compute the total amount
+	// The compute() method computes the total amount.
 	public void compute() {
 		// add casting
 		float total = (float) ((vp * vpf) + ((vp / 100) / dlx));
 		this.calculatedPremium = total;
 	}
 
-	// get the premium
+	// It gets the premium
 	public float getPremium() {
 		return calculatedPremium;
 	}

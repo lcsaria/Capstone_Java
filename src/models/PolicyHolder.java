@@ -29,88 +29,30 @@ public class PolicyHolder extends Policy {
 	static String dateIssued;
 
 	// --> INPUT (USER VALIDATION)
-	/* 	in this method, every input has name and pattern, it will find their respective
-	*	case via switch, after the user prompt the enter input, it will validate 
-	*/
-	@Override
-	public void input(String type, String pattern) {
-		String choice = type;
-		String input = null;
-		boolean flag = false;
-
-		switch (choice) {
-		case "First Name", "Last Name", "Address" -> {
-			do {
-				System.out.print(type + ":\t\t\t");
-				input = scan.nextLine();
-
-				if (input.isBlank()) {
-					System.out.println(type + " is empty!\n");
-				} else if (input.matches(pattern)) {
-					switch (type) {
-					case "First Name" -> this.firstName = input;
-					case "Last Name" -> this.lastName = input;
-					case "Address" -> this.address = input;
-					}
-					flag = true;
-				} else {
-					System.out.println("Invalid Input!");
-				}
-
-			} while (flag == false);
-		}
-		case "Driver License Number" -> {
-			do {
-				System.out.print("Driver License Number:\t\t");
-				input = scan.nextLine();
-
-				if (input.isBlank()) {
-					System.out.println(type + " is empty!\n");
-				} else {
-					this.driverLicenseNumber = input;
-					flag = true;
-				}
-			} while (flag == false);
-		}
-		case "Date Issued" -> {
-			do {
-				System.out.print("Date Issued (YYYY-MM-DD):\t");
-				input = scan.nextLine();
-				if (input.isBlank()) {
-					System.out.println(type + " is empty!\n");
-				} else if (!input.matches(pattern)) {
-					System.out.println("Invalid date format [YYYY/MM/DD]!\n");
-				} else {
-					dateIssued = input;
-					flag = true;
-				}
-			} while (flag == false);
-		}
-		}
-		flag = false;
-		type = "";
-		pattern = "";
-		choice = "";
-	}
+	/*
+	 * in this method, every input has name and pattern, it will find their
+	 * respective
+	 * case via switch, after the user prompt the enter input, it will validate
+	 */
 
 	// 2.3.4.1.1a IF THE POLICY HOLDER is ACCOUNT OWNER
 	public void setPolicyHolder(String policyNumber, String accountNumber) {
 		this.policyNumber = policyNumber;
 		System.out.println("\nPOLICY HOLDER");
 		fetchOwnerInformation(accountNumber); // GO TO 2.3.4.1a.1
-		input("Driver License Number", "[a-zA-Z\s]+");
-		input("Date Issued", "[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}");
+		this.driverLicenseNumber = valid.validateString("Driver License Number: ", "^.{0,255}$");
+		this.dateIssued = valid.validateString("Date Issued: ", "[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}");
 	}
 
 	// 2.3.4.1.1b IF THE POLICY HOLDER is DEPENDENT
 	public void setPolicyHolder(String policyNumber) {
 		this.policyNumber = policyNumber;
 		System.out.println("\nPOLICY HOLDER");
-		input("First Name", "[a-zA-Z\s]+");
-		input("Last Name", "[a-zA-Z\s]+");
-		input("Address", "^.{0,255}$");
-		input("Driver License Number", "[a-zA-Z\s]+");
-		input("Date Issued", "[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}");
+		this.firstName = valid.validateString("First Name: ", "[a-zA-Z\s]+");
+		this.lastName = valid.validateString("Last Name: ", "[a-zA-Z\s]+");
+		this.address = valid.validateString("Address: ", "[a-zA-Z\s]+");
+		this.driverLicenseNumber = valid.validateString("Driver License Number: ", "^.{0,255}$");
+		this.dateIssued = valid.validateString("Date Issued: ", "[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}");
 	}
 
 	// 2.3.4.1a.1 FETCH OWNER INFORMATION
@@ -146,7 +88,8 @@ public class PolicyHolder extends Policy {
 			ps.setString(6, dateIssued);
 			ps.setInt(7, acctNo); // additional column
 			int result = ps.executeUpdate();
-			System.out.println((result == 1) ? "\nPolicy Holder Saved!" : "Something wrong!\n"); // using conditional formatting
+			System.out.println((result == 1) ? "\nPolicy Holder Saved!" : "Something wrong!\n"); // using conditional
+																									// formatting
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
