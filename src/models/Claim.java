@@ -29,54 +29,26 @@ public class Claim extends Policy {
 	private double cost;
 	private String policyNumber;
 
-	// INPUT CLAIM INFORMATION
-	@Override
-	public void input(String type, String pattern) {
-		String choice = type;
+	public void inputClaimNumber() {
 		String input = null;
 		boolean flag = false;
+		do {
+			System.out.printf("%-40s", "Claim Number [Cxxxxx]:");
+			input = scan.nextLine();
 
-		switch (choice) {
-			case "Claim Number" -> {
-				do {
-					System.out.print(type + "[Cxxxxx]:\t\t");
-					input = scan.nextLine();
-
-					if (input.isBlank()) {
-						System.out.println(type + " is empty!\n");
-					} else if (!input.matches(pattern)) {
-						System.out.println("Invalid input\n");
-					} else {
-						if (validateClaimNumber(input) == false) { // GO TO 4.2.1
-							System.out.println("Claim #" + input + " exists. Try another number.\n");
-						} else {
-							this.claimNumber = input;
-							flag = true;
-						}
-					}
-				} while (flag == false);
+			if (input.isBlank()) {
+				System.out.println("Input is empty!\n");
+			} else if (!input.matches("^[C][0-9]{5}")) {
+				System.out.println("Invalid input\n");
+			} else {
+				if (validateClaimNumber(input) == false) { // GO TO 4.2.1
+					System.out.println("Claim #" + input + " exists. Try another number.\n");
+				} else {
+					this.claimNumber = input;
+					flag = true;
+				}
 			}
-			case "Claim Number - Search" -> {
-				do {
-					System.out.print("Claim Number [Cxxxxx]:\t\t");
-					input = scan.nextLine();
-
-					if (input.isBlank()) {
-						System.out.println(type + " is empty!\n");
-					} else if (!input.matches(pattern)) {
-						System.out.println("Invalid input\n");
-					} else {
-						this.claimNumber = input;
-						flag = true;
-					}
-				} while (flag == false);
-			}
-		}
-
-		flag = false;
-		type = "";
-		pattern = "";
-		choice = "";
+		} while (flag == false);
 	}
 
 	// 4.0 SEARCH POLICY NUMBER
@@ -126,7 +98,7 @@ public class Claim extends Policy {
 	// 4.2 GET CLAIM INFORMATION
 	public void claimInfo() {
 		System.out.println("CLAIM INFORMATION\n");
-		input("Claim Number", "^[C][0-9]{5}");
+		inputClaimNumber();
 		this.date = valid.validateString("Date of Accident (YYYY-MM-DD): ", "[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}");
 		this.address = valid.validateString("Address: ", "[a-zA-Z\s]+");
 		this.description = valid.validateString("Description: ", "[a-zA-Z\s]+");
@@ -200,7 +172,7 @@ public class Claim extends Policy {
 	@Override
 	public void search() {
 		System.out.println("\nSEARCH CLAIM");
-		input("Claim Number - Search", "^[C][0-9]{5}");
+		this.claimNumber = valid.validateString("Claim Number (Cxxxxx):", "^[C][0-9]{5}");
 		delay(1000);
 		String sql = "SELECT * from claim where claimNumber=?";
 		try {

@@ -33,10 +33,6 @@ public class Policy extends CustomerAccount {
 	private double premium;
 	static ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
 
-	public void input(String type, String pattern) {
-
-	}
-
 	public void inputPolicyNumber() {
 		String input = null;
 		boolean flag = false;
