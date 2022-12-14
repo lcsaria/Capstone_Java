@@ -16,7 +16,7 @@ public class Validation {
     public String validateString(String message, String pattern) {
         boolean isValid = false;
         do {
-            System.out.printf("%-30s", message);
+            System.out.printf("%-40s", message);
             String enter = scan.nextLine();
 
             if (enter.isBlank()) {

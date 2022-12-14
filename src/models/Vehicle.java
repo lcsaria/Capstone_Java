@@ -30,12 +30,7 @@ public class Vehicle extends Policy {
 	private double premium;
 	private int vehicleNo;
 
-	/*
-	 * in this method, every input has name and pattern, it will find their
-	 * respective
-	 * case via switch, after the user prompt the enter input, it will validate
-	 */
-	public void input(String type) {
+	public void choose(String type) {
 		String choice = type;
 		String input = null;
 		boolean flag = false;
@@ -87,22 +82,6 @@ public class Vehicle extends Policy {
 				} while (flag == false);
 				break;
 			}
-			case "Purchase Price" -> {
-				pattern = "(0|([1-9][0-9]*))(\\.[0-9]{1,2}+)?$";
-				do {
-					System.out.print("\nPurchase Price:\t\t\t$");
-					input = scan.nextLine();
-
-					if (input.isBlank()) {
-						System.out.println(type + "is empty!\n");
-					} else if (!input.matches(pattern)) {
-						System.out.println("Invalid input!\n");
-					} else {
-						this.price = Double.parseDouble(input);
-						flag = true;
-					}
-				} while (flag == false);
-			}
 		}
 
 		flag = false;
@@ -124,9 +103,9 @@ public class Vehicle extends Policy {
 		this.make = valid.validateString("Make/Brand: ", "[a-zA-Z\s]+");
 		this.model = valid.validateString("Model: ", "[a-zA-Z\s]+");
 		this.year = Integer.parseInt(valid.validateString("Year: ", "[0-9]{4}"));
-		input("Type");
-		input("Fuel Type");
-		input("Purchase Price");
+		choose("Type");
+		choose("Fuel Type");
+		this.price = Double.parseDouble(valid.validateString("Cost: $", "(0|([1-9][0-9]*))(\\.[0-9]{1,2}+)?$"));
 		this.color = valid.validateString("Color: ", "[a-zA-Z\s]+");
 
 		computePremium();

@@ -37,124 +37,40 @@ public class Claim extends Policy {
 		boolean flag = false;
 
 		switch (choice) {
-		case "Policy Number" -> {
-			do {
-				System.out.print(type + ":\t\t\t");
-				input = scan.nextLine();
+			case "Claim Number" -> {
+				do {
+					System.out.print(type + "[Cxxxxx]:\t\t");
+					input = scan.nextLine();
 
-				if (input.isBlank()) {
-					System.out.println(type + " is empty!\n");
-				} else if (!input.matches(pattern)) {
-					System.out.println("Invalid input\n");
-				} else {
-					this.policyNumber = input;
-					flag = true;
-				}
-			} while (flag == false);
-		}
-		case "Claim Number" -> {
-			do {
-				System.out.print(type + "[Cxxxxx]:\t\t");
-				input = scan.nextLine();
-
-				if (input.isBlank()) {
-					System.out.println(type + " is empty!\n");
-				} else if (!input.matches(pattern)) {
-					System.out.println("Invalid input\n");
-				} else {
-					if (validateClaimNumber(input) == false) { //  GO TO 4.2.1
-						System.out.println("Claim #" + input + " exists. Try another number.\n");
+					if (input.isBlank()) {
+						System.out.println(type + " is empty!\n");
+					} else if (!input.matches(pattern)) {
+						System.out.println("Invalid input\n");
 					} else {
-					this.claimNumber = input;
-					flag = true;
+						if (validateClaimNumber(input) == false) { // GO TO 4.2.1
+							System.out.println("Claim #" + input + " exists. Try another number.\n");
+						} else {
+							this.claimNumber = input;
+							flag = true;
+						}
 					}
-				}
-			} while (flag == false);
-		}
-		case "Claim Number - Search" -> {
-			do {
-				System.out.print("Claim Number [Cxxxxx]:\t\t");
-				input = scan.nextLine();
+				} while (flag == false);
+			}
+			case "Claim Number - Search" -> {
+				do {
+					System.out.print("Claim Number [Cxxxxx]:\t\t");
+					input = scan.nextLine();
 
-				if (input.isBlank()) {
-					System.out.println(type + " is empty!\n");
-				} else if (!input.matches(pattern)) {
-					System.out.println("Invalid input\n");
-				} else {
-					this.claimNumber = input;
-					flag = true;
-				}
-			} while (flag == false);
-		}
-		case "Accident Date" -> {
-			do {
-				System.out.print("Date of Accident (YYYY-MM-DD):\t");
-				input = scan.nextLine();
-				if (input.isBlank()) {
-					System.out.println(type + " is empty!\n");
-				} else if (!input.matches(pattern)) {
-					System.out.println("Invalid date format [YYYY/MM/DD]!\n");
-				} else {
-					this.date = input;
-					flag = true;
-				}
-			} while (flag == false);
-		}
-		case "Address" -> {
-			do {
-				System.out.print("Address:\t\t\t");
-				input = scan.nextLine();
-
-				if (input.isBlank()) {
-					System.out.println(type + " is empty!\n");
-				} else {
-					this.address = input;
-					flag = true;
-				}
-			} while (flag == false);
-		}
-		case "Description" -> {
-			do {
-				System.out.print(type + ":\t\t\t");
-				input = scan.nextLine();
-
-				if (input.isBlank()) {
-					System.out.println(type + " is empty!\n");
-				} else {
-					this.description = input;
-					flag = true;
-				}
-			} while (flag == false);
-		}
-
-		case "Damage Description" -> {
-			do {
-				System.out.print(type + ":\t\t");
-				input = scan.nextLine();
-
-				if (input.isBlank()) {
-					System.out.println(type + " is empty!\n");
-				} else {
-					this.damageDescription = input;
-					flag = true;
-				}
-			} while (flag == false);
-		}
-		case "Cost" -> {
-			do {
-				System.out.print("Estimated cost of repairs:\t$");
-				input = scan.nextLine();
-
-				if (input.isBlank()) {
-					System.out.println(type + " is empty!\n");
-				} else if (!input.matches(pattern)) {
-					System.out.println("Invalid input ($xxxx.xx");
-				} else {
-					this.cost = Double.parseDouble(input);
-					flag = true;
-				}
-			} while (flag == false);
-		}
+					if (input.isBlank()) {
+						System.out.println(type + " is empty!\n");
+					} else if (!input.matches(pattern)) {
+						System.out.println("Invalid input\n");
+					} else {
+						this.claimNumber = input;
+						flag = true;
+					}
+				} while (flag == false);
+			}
 		}
 
 		flag = false;
@@ -168,7 +84,7 @@ public class Claim extends Policy {
 		System.out.println("\nFILE A ACCIDENT CLAIM");
 
 		try {
-			ResultSet result = searchPolicyNumber();
+			ResultSet result = searchPolicyNumber(); // GOTO 4.1
 			// IF policyNumber EXIST
 			if (result.next()) {
 				do {
@@ -194,7 +110,7 @@ public class Claim extends Policy {
 
 	// 4.1 TO FILE A CLAIM, THE USER MUST SEARCH POLICY NUMBER
 	public ResultSet searchPolicyNumber() {
-		input("Policy Number", "[0-9]{6}");
+		this.policyNumber = valid.validateString("Policy Number [XXXXXX]:", "[0-9]{6}");
 		ResultSet result = null;
 		String sql = "SELECT * from policy WHERE policyNumber=?";
 		try {
@@ -211,15 +127,15 @@ public class Claim extends Policy {
 	public void claimInfo() {
 		System.out.println("CLAIM INFORMATION\n");
 		input("Claim Number", "^[C][0-9]{5}");
-		input("Accident Date", "[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}");
-		input("Address", "[a-zA-Z\s]+");
-		input("Description", "[a-zA-Z\s]+");
-		input("Damage Description", "[a-zA-Z\s]+");
-		input("Cost", "[0-9]+[\\.]?[0-9]*");
+		this.date = valid.validateString("Date of Accident (YYYY-MM-DD): ", "[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}");
+		this.address = valid.validateString("Address: ", "[a-zA-Z\s]+");
+		this.description = valid.validateString("Description: ", "[a-zA-Z\s]+");
+		this.damageDescription = valid.validateString("Damage Description: ", "[a-zA-Z\s]+");
+		this.cost = Double.parseDouble(valid.validateString("Estimated cost of repairs: $", "[0-9]+[\\.]?[0-9]*"));
 		confirm(); // GO TO 4.3
 	}
 
-	// 4.2.1 VALIDATE IF CLAIM NUMBER EXISTS 
+	// 4.2.1 VALIDATE IF CLAIM NUMBER EXISTS
 	public boolean validateClaimNumber(String input) {
 		delay(1000);
 		boolean isValid = false;
@@ -249,7 +165,7 @@ public class Claim extends Policy {
 				System.out.println("Saved Failed!");
 				flag = true;
 			} else if (input.equalsIgnoreCase("y")) {
-				delay(1000); 
+				delay(1000);
 				submit(); // GO TO 4.4
 				flag = true;
 			} else {

@@ -33,12 +33,6 @@ public class Policy extends CustomerAccount {
 	private double premium;
 	static ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
 
-	// --> INPUT
-	/*
-	 * in this method, every input has name and pattern, it will find their
-	 * respective
-	 * case via switch, after the user prompt the enter input, it will validate
-	 */
 	public void input(String type, String pattern) {
 
 	}
