@@ -126,7 +126,7 @@ public class Policy extends CustomerAccount {
 		System.out.println("\nCREATING POLICY");
 		inputPolicyNumber();
 		// 2.2.2 ENTER EFFECTIVE DATE
-		this.effectiveDate = valid.validateString("Effective Date (YYYY-MM-DD): ", "[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}");
+		this.effectiveDate = valid.validateDate("Effective Date (YYYY-MM-DD): ", "[0-9]{4}-[0-9]{2}-[0-9]{2}");
 		getExpirationDate(); // GO TO 2.2.3
 		assignPolicyHolder();
 		if (option.equals("1")) {

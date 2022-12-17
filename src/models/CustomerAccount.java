@@ -40,87 +40,6 @@ public class CustomerAccount {
         return connection;
     }
 
-    public void initializeDatabase() {
-        try {
-            Statement stmt = connection.createStatement();
-
-            String initDatabase = "CREATE DATABASE IF NOT EXISTS `capstone`; \r\n" +
-                    "";
-
-            String useDatabase = "USE `capstone`; \r\n" +
-                    "";
-
-            String customerAccountTable = "CREATE TABLE IF NOT EXISTS `capstone`.`customer_account` ( \r\n" +
-                    " `accountNumber` INT NOT NULL, \r\n" +
-                    "`firstName` VARCHAR(45) NOT NULL, \r\n" +
-                    "`lastName` VARCHAR(255) NOT NULL, \r\n" +
-                    "`address` VARCHAR(45) NOT NULL,  \r\n" +
-                    "PRIMARY KEY (`accountNumber`));";
-
-            String policyTable = "CREATE TABLE IF NOT EXISTS `capstone`.`policy` ( \r\n" +
-                    "`policyNumber` INT NOT NULL, \r\n" +
-                    "`effectiveDate` DATE NOT NULL, \r\n" +
-                    "`expirationDate` DATE NOT NULL, \r\n" +
-                    "`policyHolder` VARCHAR(255) NOT NULL, \r\n" +
-                    "`vehicles` INT NOT NULL, \r\n" +
-                    "`premium` DECIMAL(10,5) NOT NULL, \r\n" +
-                    "`status` BOOLEAN NOT NULL, \r\n" +
-                    "`acctNo` INT NOT NULL, \r\n" +
-                    "PRIMARY KEY (`policyNumber`));";
-
-            String policyHolderTable = "CREATE TABLE IF NOT EXISTS `capstone`.`policy_holder` ( \r\n" +
-                    "`policyNumber` INT NOT NULL, \r\n" +
-                    "`firstName` VARCHAR(255) NOT NULL, \r\n" +
-                    "`lastName` VARCHAR(255) NOT NULL, \r\n" +
-                    "`address` VARCHAR(255) NOT NULL, \r\n" +
-                    "`driverLicenseNumber` VARCHAR(255) NOT NULL, \r\n" +
-                    "`dateIssued` VARCHAR(255) NOT NULL, \r\n" +
-                    "`acctNo` INT NOT NULL, \r\n" +
-                    "PRIMARY KEY (`policyNumber`));";
-
-            // FIXED: when creating 2 or more vehicles, it will cause error due to duplicate
-            // key
-            String vehicleTable = "CREATE TABLE IF NOT EXISTS `capstone`.`vehicle` ( \r\n" +
-                    "`policyNumber` INT NOT NULL, \r\n" +
-                    "`make` VARCHAR(255) NOT NULL, \r\n" +
-                    "`model` VARCHAR(255) NOT NULL, \r\n" +
-                    "`year` INT NOT NULL, \r\n" +
-                    "`type` VARCHAR(255) NOT NULL, \r\n" +
-                    "`fuelType` VARCHAR(255) NOT NULL, \r\n" +
-                    "`purchasePrice` DOUBLE NOT NULL, \r\n" +
-                    "`color` VARCHAR(45) NOT NULL, \r\n" +
-                    "`premium` DOUBLE NOT NULL ) \r\n" +
-                    "";
-
-            String claimTable = "CREATE TABLE IF NOT EXISTS `capstone`.`claim` ( \r\n" +
-                    "`claimNumber` VARCHAR(255) NOT NULL,  \r\n" +
-                    "`dateOfAccident` VARCHAR(255) NOT NULL, \r\n" +
-                    " `accidentAddress` VARCHAR(255) NOT NULL, \r\n" +
-                    "`description` VARCHAR(255) NOT NULL, \r\n" +
-                    "`damageDescription` VARCHAR(255) NOT NULL, \r\n" +
-                    "`estimatedCost` DOUBLE NOT NULL, \r\n" +
-                    " `policyNumber` INT NOT NULL, \r\n" +
-                    " PRIMARY KEY (`claimNumber`));";
-
-            stmt.executeUpdate(initDatabase);
-            stmt.executeUpdate(useDatabase);
-            System.out.println("Clearing cache....");
-            stmt.executeUpdate(customerAccountTable);
-            System.out.println("Creating customer_account table....");
-            stmt.executeUpdate(policyTable);
-            System.out.println("Creating policy table....");
-            stmt.executeUpdate(policyHolderTable);
-            System.out.println("Creating policy_holder table....");
-            stmt.executeUpdate(vehicleTable);
-            System.out.println("Creating vehicle table....");
-            stmt.executeUpdate(claimTable);
-            System.out.println("Creating claim table....");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     // EXIT THE PROGRAM AND CLOSE THE CONNECTION
     public void close() throws SQLException {
         System.out.println("Thank you!!");
@@ -151,7 +70,6 @@ public class CustomerAccount {
 
     // ---> ACCOUNT NUMBER
     public void accountNumber() {
-        String pattern = "[0-9]{4}";
         String input;
         boolean flag = false;
         do {
@@ -162,7 +80,7 @@ public class CustomerAccount {
                 System.out.println("Account Number is empty!\n");
             } else {
                 delay(1000);
-                if (input.matches(pattern)) {
+                if (input.matches("[0-9]{4}")) {
                     if (validateAccount(input) == 0) { // ==> GO TO 1.1
                         this.accountNumber = input;
                         flag = true;
@@ -178,7 +96,6 @@ public class CustomerAccount {
 
         input = "";
         flag = false;
-        pattern = null;
     }
 
     // 1.1 VALIDATE ACCOUNT

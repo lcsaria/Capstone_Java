@@ -3,6 +3,7 @@
  */
 package models;
 
+import java.time.LocalDate;
 import java.util.Scanner;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Scanner;
 public class Validation {
     static Scanner scan = new Scanner(System.in);
     private String input;
-
+    
     public String validateString(String message, String pattern) {
         boolean isValid = false;
         do {
@@ -31,4 +32,30 @@ public class Validation {
         return input;
     }
 
+    // check if effective date is not later than today
+    public String validateDate(String message, String pattern) {
+        boolean isValid = false;
+
+        do {
+            System.out.printf("%-40s", message);
+            String enter = scan.nextLine();
+
+            if (enter.isBlank()) {
+                System.out.println("Empty input. Try again");
+            } else if (!enter.matches(pattern)) {
+                System.out.println("Invalid input. Try again");
+            } else {
+                // validate Date (to be done)
+                LocalDate dateEntered = LocalDate.parse(String.valueOf(enter));
+                if (LocalDate.now().compareTo(dateEntered) <= 0 ) {
+                    this.input = enter;
+                    isValid = true;
+                } else {
+                    System.out.println("Invalid date. It should be today onwards. ");
+                }
+            }
+        } while (!isValid);
+        return input;
+    }
+    
 }

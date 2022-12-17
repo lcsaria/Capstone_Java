@@ -24,7 +24,7 @@ public class PASApp {
 
 	static Scanner scan = new Scanner(System.in);
 	static Connection conn = null;
-	static String URL = "jdbc:mysql://127.0.0.1:3306/"; // URL
+	static String URL = "jdbc:mysql://127.0.0.1:3306/capstone"; // URL
 	static String USERNAME = "root"; // USERNAME
 	static String PASSWORD = "root"; // PASSWORD
 
@@ -42,7 +42,6 @@ public class PASApp {
 			conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
 			customer.setConnection(conn);
 			System.out.println("Connection done.");
-			customer.initializeDatabase();
 			customer.delay(500);
 			do {
 				customer.menu(); // set to menu

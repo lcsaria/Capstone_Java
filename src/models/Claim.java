@@ -7,7 +7,7 @@ we * Java Course 4, Module 3
  * @author Lmarl Saria
  * 
  * Date Created: June 28, 2022
- * Date Updated: August 15, 2022
+ * Date Updated: December 19, 2022
  * 
  * -- edit header and comments
  * -- add user validation [claim number]
@@ -29,28 +29,6 @@ public class Claim extends Policy {
 	private double cost;
 	private String policyNumber;
 
-	public void inputClaimNumber() {
-		String input = null;
-		boolean flag = false;
-		do {
-			System.out.printf("%-40s", "Claim Number [Cxxxxx]:");
-			input = scan.nextLine();
-
-			if (input.isBlank()) {
-				System.out.println("Input is empty!\n");
-			} else if (!input.matches("^[C][0-9]{5}")) {
-				System.out.println("Invalid input\n");
-			} else {
-				if (validateClaimNumber(input) == false) { // GO TO 4.2.1
-					System.out.println("Claim #" + input + " exists. Try another number.\n");
-				} else {
-					this.claimNumber = input;
-					flag = true;
-				}
-			}
-		} while (flag == false);
-	}
-
 	// 4.0 SEARCH POLICY NUMBER
 	public void file() {
 		System.out.println("\nFILE A ACCIDENT CLAIM");
@@ -68,7 +46,7 @@ public class Claim extends Policy {
 					} else {
 						delay(1000);
 						System.out.printf("Policy #%s exist. Ready for filing claim.\n\n", policyNumber);
-						claimInfo(); // GO TO 4.2
+						getClaimInformation(); // GO TO 4.2
 					}
 				} while (result.next());
 			} else {
@@ -96,7 +74,7 @@ public class Claim extends Policy {
 	}
 
 	// 4.2 GET CLAIM INFORMATION
-	public void claimInfo() {
+	public void getClaimInformation() {
 		System.out.println("CLAIM INFORMATION\n");
 		inputClaimNumber();
 		this.date = valid.validateString("Date of Accident (YYYY-MM-DD): ", "[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}");
@@ -105,6 +83,26 @@ public class Claim extends Policy {
 		this.damageDescription = valid.validateString("Damage Description: ", "[a-zA-Z\s]+");
 		this.cost = Double.parseDouble(valid.validateString("Estimated cost of repairs: $", "[0-9]+[\\.]?[0-9]*"));
 		confirm(); // GO TO 4.3
+	}
+
+	public void inputClaimNumber() {
+		String input = null;
+		do {
+			System.out.printf("%-40s", "Claim Number [Cxxxxx]:");
+			input = scan.nextLine();
+
+			if (input.isBlank()) {
+				System.out.println("Input is empty!\n");
+			} else if (!input.matches("^[C][\\d]{5}")) {
+				System.out.println("Invalid input\n");
+			} else {
+				if (validateClaimNumber(input) == false) { // GO TO 4.2.1
+					System.out.println("Claim #" + input + " exists. Try another number.\n");
+				} else {
+					this.claimNumber = input;
+				}
+			}
+		} while (this.claimNumber == null);
 	}
 
 	// 4.2.1 VALIDATE IF CLAIM NUMBER EXISTS
@@ -128,23 +126,23 @@ public class Claim extends Policy {
 	@Override
 	public void confirm() {
 		String input;
-		boolean flag = false;
+		boolean isSubmit = false;
 		do {
 			System.out.print("\nDo you want to save claim using this data? [Y/N] ");
 			input = scan.nextLine();
 			if (input.equalsIgnoreCase("n")) {
 				delay(1000); // 1 sec delay
 				System.out.println("Saved Failed!");
-				flag = true;
+				isSubmit = true;
 			} else if (input.equalsIgnoreCase("y")) {
 				delay(1000);
 				submit(); // GO TO 4.4
-				flag = true;
+				isSubmit = true;
 			} else {
 				System.out.println("Invalid choice!");
 			}
 
-		} while (flag == false);
+		} while (isSubmit == false);
 	}
 
 	// 4.4 SUBMIT CLAIM
@@ -183,21 +181,21 @@ public class Claim extends Policy {
 			if (result.next()) {
 				do {
 					String cNo = result.getString("claimNumber");
-					String date = result.getString("dateOfAccident");
-					String address = result.getString("accidentAddress");
+					String dateAccident = result.getString("dateOfAccident");
+					String accidentAddress = result.getString("accidentAddress");
 					String desc = result.getString("description");
 					String dmgDesc = result.getString("damageDescription");
-					Double cost = result.getDouble("estimatedCost");
+					Double estimatedCost = result.getDouble("estimatedCost");
 					int pNo = result.getInt("policyNumber");
 
 					System.out.println("\nClaim #" + cNo);
 					delay(1000);
 					System.out.printf("Linked to Policy #%06d\n", pNo);
-					System.out.println("Date of Accident:\t\t" + date);
-					System.out.println("Address:\t\t\t" + address);
+					System.out.println("Date of Accident:\t\t" + dateAccident);
+					System.out.println("Address:\t\t\t" + accidentAddress);
 					System.out.println("Description:\t\t\t" + desc);
 					System.out.println("Damage Description:\t\t" + dmgDesc);
-					System.out.printf("Estimated Cost:\t\t\t$%.2f\n", cost);
+					System.out.printf("Estimated Cost:\t\t\t$%.2f\n", estimatedCost);
 
 				} while (result.next());
 			} else {
