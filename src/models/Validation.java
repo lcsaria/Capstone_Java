@@ -13,17 +13,17 @@ import java.util.Scanner;
 public class Validation {
     static Scanner scan = new Scanner(System.in);
     private String input;
-    
+
     public String validateString(String message, String pattern) {
         boolean isValid = false;
         do {
-            System.out.printf("%-40s", message);
+            System.out.printf("%-35s", message);
             String enter = scan.nextLine();
 
             if (enter.isBlank()) {
-                System.out.println("Empty input. Try again");
+                System.out.println("Empty input. Try again\n");
             } else if (!enter.matches(pattern)) {
-                System.out.println("Invalid input. Try again");
+                System.out.println("Invalid input. Try again\n");
             } else {
                 this.input = enter;
                 isValid = true;
@@ -37,25 +37,25 @@ public class Validation {
         boolean isValid = false;
 
         do {
-            System.out.printf("%-40s", message);
+            System.out.printf("%-35s", message);
             String enter = scan.nextLine();
 
             if (enter.isBlank()) {
-                System.out.println("Empty input. Try again");
+                System.out.println("Empty input. Try again\n");
             } else if (!enter.matches(pattern)) {
-                System.out.println("Invalid input. Try again");
+                System.out.println("Invalid input. Try again\n");
             } else {
                 // validate Date (to be done)
                 LocalDate dateEntered = LocalDate.parse(String.valueOf(enter));
-                if (LocalDate.now().compareTo(dateEntered) <= 0 ) {
+                if (LocalDate.now().compareTo(dateEntered) <= 0) {
                     this.input = enter;
                     isValid = true;
                 } else {
-                    System.out.println("Invalid date. It should be today onwards. ");
+                    System.out.println("Invalid date. It should be today onwards.\n");
                 }
             }
         } while (!isValid);
         return input;
     }
-    
+
 }

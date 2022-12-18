@@ -7,7 +7,7 @@
  * @author Lmarl Saria
  * 
  * Date Created: June 28, 2022
- * Date Modified: December 5, 2022
+ * Date Modified: December 19, 2022
  * 
  * -- add database implementation
  * -- update comments
@@ -33,7 +33,7 @@ public class CustomerAccount {
 
     // --> CONNECTION
     public void setConnection(Connection conn) {
-        this.connection = conn;
+        CustomerAccount.connection = conn;
     }
 
     public Connection getConnection() {
@@ -66,57 +66,6 @@ public class CustomerAccount {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    // ---> ACCOUNT NUMBER
-    public void accountNumber() {
-        String input;
-        boolean flag = false;
-        do {
-            System.out.printf("%-30s", "Account Number:");
-            input = scan.nextLine();
-
-            if (input.isBlank()) {
-                System.out.println("Account Number is empty!\n");
-            } else {
-                delay(1000);
-                if (input.matches("[0-9]{4}")) {
-                    if (validateAccount(input) == 0) { // ==> GO TO 1.1
-                        this.accountNumber = input;
-                        flag = true;
-                    } else {
-                        System.out.printf("Account #%s exists!\n\n", input);
-                    }
-                } else {
-                    System.out.println("Invalid input!\n");
-                }
-
-            }
-        } while (flag == false);
-
-        input = "";
-        flag = false;
-    }
-
-    // 1.1 VALIDATE ACCOUNT
-    public int validateAccount(String accountNumber) {
-        int count = 0;
-        String sql = "SELECT COUNT(*) as count from customer_account WHERE accountNumber = ?";
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(sql);
-            ps.setString(1, accountNumber);
-            ResultSet result = ps.executeQuery();
-
-            if (result.next()) {
-                do {
-                    count = result.getInt("count");
-                } while (result.next());
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return count;
     }
 
     // USE FOR TABLE IN 5.0 SEARCH ACCOUNT
@@ -158,18 +107,64 @@ public class CustomerAccount {
     public void create() {
         String pattern = "[a-zA-Z\\s]+";
         System.out.println("\nCREATE A NEW CUSTOMER ACCOUNT\n");
-        accountNumber(); // input (type, pattern)
+        inputAccountNumber(); // go to 1.1.0
         this.firstName = valid.validateString("First Name:", pattern);
         this.lastName = valid.validateString("Last Name:", pattern);
         this.address = valid.validateString("Address:", pattern);
-        confirm(); // --> GO TO 1.2
+        confirmCustomerAccount(); // --> GO TO 1.2
+    }
+
+    // 1.1.0 INPUT ACCOUNT NUMBER
+    public void inputAccountNumber() {
+        String input;
+        do {
+            System.out.printf("%-35s", "Account Number:");
+            input = scan.nextLine();
+
+            if (input.isBlank()) {
+                System.out.println("Account Number is empty!\n");
+            } else {
+                delay(1000);
+                if (input.matches("[0-9]{4}")) {
+                    if (validateAccount(input) == 0) { // ==> GO TO 1.1.1
+                        this.accountNumber = input;
+                    } else {
+                        System.out.printf("Account #%s exists!\n\n", input);
+                    }
+                } else {
+                    System.out.println("Invalid input!\n");
+                }
+
+            }
+        } while (this.accountNumber == null);
+    }
+
+    // 1.1.1 VALIDATE ACCOUNT
+    public int validateAccount(String accountNumber) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) as count from customer_account WHERE accountNumber = ?";
+        try {
+            PreparedStatement ps = getConnection().prepareStatement(sql);
+            ps.setString(1, accountNumber);
+            ResultSet result = ps.executeQuery();
+
+            if (result.next()) {
+                do {
+                    count = result.getInt("count");
+                } while (result.next());
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
     }
 
     // 1.2 CONFIRM USER INPUT
     // IF first and last name appear on the customer account, it will display an
     // error message
     // ELSE proceed to confirm
-    public void confirm() {
+    public void confirmCustomerAccount() {
         boolean flag = false;
         String sql = "SELECT * from customer_account where firstName=? and lastName=?";
         try {
@@ -184,18 +179,18 @@ public class CustomerAccount {
                 System.out.println("\nA PERSON IS ALREADY USING YOUR DETAILS. PLEASE TRY AGAIN.");
             } else {
                 do {
-                    System.out.print("\nDo you want to create account using this data? [Y/N]:\t\t");
+                    System.out.print("\nDO YOU WANT TO CREATE ACCOUNT USING THIS DATA? [Y/N]:\t\t");
                     String input = scan.nextLine();
                     if (input.equalsIgnoreCase("Y")) {
                         delay(1000);
-                        submit(); // GO TO 1.3
+                        submitCustomerAccount(); // GO TO 1.3
                         flag = true;
                     } else if (input.equalsIgnoreCase("N")) {
                         delay(1000);
-                        System.out.println("\nData Failed to save!!");
+                        System.out.println("\nDATA NOT SAVED!!");
                         flag = true;
                     } else {
-                        System.out.println("Invalid choice");
+                        System.out.println("INVALID CHOICE!");
                     }
 
                 } while (flag == false);
@@ -208,7 +203,7 @@ public class CustomerAccount {
     }
 
     // 1.3 SUBMIT CUSTOMER ACCOUNT
-    public void submit() {
+    public void submitCustomerAccount() {
         String sql = "INSERT into customer_account VALUES (?,?,?,?)";
         try {
             PreparedStatement ps = getConnection().prepareStatement(sql);

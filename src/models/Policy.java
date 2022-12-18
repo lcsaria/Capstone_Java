@@ -35,10 +35,9 @@ public class Policy extends CustomerAccount {
 
 	public void inputPolicyNumber() {
 		String input = null;
-		boolean flag = false;
 
 		do {
-			System.out.printf("%-30s", "Enter policy number (XXXXXX):");
+			System.out.printf("%-35s", "Enter policy number (XXXXXX):");
 			input = scan.nextLine();
 
 			delay(1000);
@@ -50,9 +49,8 @@ public class Policy extends CustomerAccount {
 				System.out.println("Policy #" + input + " exists!!\n");
 			} else {
 				this.policyNumber = input;
-				flag = true;
 			}
-		} while (flag == false);
+		} while (this.policyNumber == null);
 	}
 
 	// VALIDATE POLICY NUMBER
@@ -138,7 +136,7 @@ public class Policy extends CustomerAccount {
 			ph.setPolicyHolder(policyNumber); // GO TO 2.3.4.1.1b
 			addVehicle(); // GO TO 2.4
 		}
-		confirm(); // GO TO 2.5
+		confirmPolicy(); // GO TO 2.5
 	}
 
 	// 2.2.3 GET THE EXPIRATION DATE
@@ -157,7 +155,7 @@ public class Policy extends CustomerAccount {
 		String expire = String.format("%d-%d-%d", c.get(Calendar.YEAR), (c.get(Calendar.MONTH) + 1),
 				c.get(Calendar.DATE));
 		this.expirationDate = expire;
-		System.out.printf("Expiration Date (YYYY-MM-DD):\t%s\n", expirationDate);
+		System.out.printf("%-35s%s\n", "Expiration Date (YYYY-MM-DD):", expirationDate);
 	}
 
 	// 2.2.4 ASSIGNING POLICY HOLDER
@@ -181,13 +179,13 @@ public class Policy extends CustomerAccount {
 	}
 
 	// 2.5 CONFIRM POLICY
-	public void confirm() {
+	public void confirmPolicy() {
 		boolean flag = false;
 		do {
 			System.out.print("\nDo you want to save using this data? [Y/N]:\t\t");
 			String input = scan.nextLine();
 			if (input.equalsIgnoreCase("Y")) {
-				submit(); // GO TO 1.2
+				submitPolicy(); // GO TO 1.2
 				flag = true;
 			} else if (input.equalsIgnoreCase("N")) {
 				delay(1000);
@@ -200,7 +198,7 @@ public class Policy extends CustomerAccount {
 	}
 
 	// 2.6 SUBMIT POLICY
-	public void submit() {
+	public void submitPolicy() {
 		int acctNo = Integer.parseInt(accountNumber);
 		try {
 			delay(1000);
@@ -208,7 +206,7 @@ public class Policy extends CustomerAccount {
 
 			for (int count = 0; count < this.vehicle; count++) {
 				delay(1000);
-				vehicles.get(count).submit(); // ==> GO TO 2.6.2
+				vehicles.get(count).submitVehicle(); // ==> GO TO 2.6.2
 				System.out.printf("%d of %d VEHICLE SAVED.\n", count + 1, this.vehicle);
 			}
 			this.premium = totalPremium(); // ==> GO TO 2.6.3

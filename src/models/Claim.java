@@ -82,7 +82,7 @@ public class Claim extends Policy {
 		this.description = valid.validateString("Description: ", "[a-zA-Z\s]+");
 		this.damageDescription = valid.validateString("Damage Description: ", "[a-zA-Z\s]+");
 		this.cost = Double.parseDouble(valid.validateString("Estimated cost of repairs: $", "[0-9]+[\\.]?[0-9]*"));
-		confirm(); // GO TO 4.3
+		confirmClaim(); // GO TO 4.3
 	}
 
 	public void inputClaimNumber() {
@@ -123,8 +123,7 @@ public class Claim extends Policy {
 	}
 
 	// 4.3 CONFIRM CLAIM
-	@Override
-	public void confirm() {
+	public void confirmClaim() {
 		String input;
 		boolean isSubmit = false;
 		do {
@@ -136,7 +135,7 @@ public class Claim extends Policy {
 				isSubmit = true;
 			} else if (input.equalsIgnoreCase("y")) {
 				delay(1000);
-				submit(); // GO TO 4.4
+				submitPolicy(); // GO TO 4.4
 				isSubmit = true;
 			} else {
 				System.out.println("Invalid choice!");
@@ -146,8 +145,7 @@ public class Claim extends Policy {
 	}
 
 	// 4.4 SUBMIT CLAIM
-	@Override
-	public void submit() {
+	public void submitClaim() {
 		String sql = "INSERT into claim VALUES (?,?,?,?,?,?,?)";
 		try {
 			PreparedStatement ps = getConnection().prepareStatement(sql);

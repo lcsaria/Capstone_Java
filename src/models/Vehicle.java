@@ -125,8 +125,7 @@ public class Vehicle extends Policy {
 	}
 
 	// 2.6.2 SUBMIT
-	@Override
-	public void submit() {
+	public void submitVehicle() {
 		String sql = "INSERT into vehicle VALUES (?,?,?,?,?,?,?,?,?)";
 		try {
 			PreparedStatement ps = getConnection().prepareStatement(sql);
