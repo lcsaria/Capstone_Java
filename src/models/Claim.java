@@ -44,7 +44,7 @@ public class Claim extends Policy {
 					if (status == 0) {
 						System.out.printf("\nPolicy #%s is INACTIVE. Expration Date: %s\n", policyNumber, expire);
 					} else {
-						delay(1000);
+						put.delay(1000);
 						System.out.printf("Policy #%s exist. Ready for filing claim.\n\n", policyNumber);
 						getClaimInformation(); // GO TO 4.2
 					}
@@ -107,7 +107,7 @@ public class Claim extends Policy {
 
 	// 4.2.1 VALIDATE IF CLAIM NUMBER EXISTS
 	public boolean validateClaimNumber(String input) {
-		delay(1000);
+		put.delay(1000);
 		boolean isValid = false;
 		String sql = "SELECT * from claim where claimNumber=?";
 		try {
@@ -130,11 +130,11 @@ public class Claim extends Policy {
 			System.out.print("\nDo you want to save claim using this data? [Y/N] ");
 			input = scan.nextLine();
 			if (input.equalsIgnoreCase("n")) {
-				delay(1000); // 1 sec delay
+				put.delay(1000); // 1 sec put.delay
 				System.out.println("Saved Failed!");
 				isSubmit = true;
 			} else if (input.equalsIgnoreCase("y")) {
-				delay(1000);
+				put.delay(1000);
 				submitPolicy(); // GO TO 4.4
 				isSubmit = true;
 			} else {
@@ -169,7 +169,7 @@ public class Claim extends Policy {
 	public void search() {
 		System.out.println("\nSEARCH CLAIM");
 		this.claimNumber = valid.validateString("Claim Number (Cxxxxx):", "^[C][0-9]{5}");
-		delay(1000);
+		put.delay(1000);
 		String sql = "SELECT * from claim where claimNumber=?";
 		try {
 			PreparedStatement ps = getConnection().prepareStatement(sql);
@@ -187,7 +187,7 @@ public class Claim extends Policy {
 					int pNo = result.getInt("policyNumber");
 
 					System.out.println("\nClaim #" + cNo);
-					delay(1000);
+					put.delay(1000);
 					System.out.printf("Linked to Policy #%06d\n", pNo);
 					System.out.println("Date of Accident:\t\t" + dateAccident);
 					System.out.println("Address:\t\t\t" + accidentAddress);

@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `capstone`.`policy` (
   `expirationDate` DATE NOT NULL,
   `policyHolder` VARCHAR(255) NOT NULL,
   `vehicles` INT NOT NULL,
-  `premium` DECIMAL(10,5) NOT NULL,
+  `premium` DECIMAL(10,2) NOT NULL,
   `status` BOOLEAN NOT NULL,
   `acctNo` INT NOT NULL,
   PRIMARY KEY (`policyNumber`));
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `capstone`.`claim` (
   `accidentAddress` VARCHAR(255) NOT NULL,
   `description` VARCHAR(255) NOT NULL,
   `damageDescription` VARCHAR(255) NOT NULL,
-  `estimatedCost` DOUBLE NOT NULL,
+  `estimatedCost` DOUBLE(15,2) NOT NULL,
   `policyNumber` INT NOT NULL,
   PRIMARY KEY (`claimNumber`));
 

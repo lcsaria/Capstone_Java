@@ -33,18 +33,19 @@ public class PASApp {
 		CustomerAccount customer = new CustomerAccount();
 		Policy policy = new Policy();
 		Claim claim = new Claim();
+		Helper put = new Helper();
 
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");// Register driver
-			customer.delay(500);
+			put.delay(500);
 			System.out.println("Establishing connection...");// Establish a connection with in the database
-			customer.delay(500);
+			put.delay(500);
 			conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
 			customer.setConnection(conn);
 			System.out.println("Connection done.");
-			customer.delay(500);
+			put.delay(500);
 			do {
-				customer.menu(); // set to menu
+				put.menu(); // set to menu
 				choice = scan.nextLine();
 				if (choice.isBlank()) {
 					System.out.println("\nNo choice. Try again!");

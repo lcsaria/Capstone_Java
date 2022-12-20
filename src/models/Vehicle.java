@@ -127,6 +127,8 @@ public class Vehicle extends Policy {
     // 2.6.2 SUBMIT
     public void submitVehicle() {
         String sql = "INSERT into vehicle VALUES (?,?,?,?,?,?,?,?,?)";
+        double totalPremium = Double.parseDouble(String.format("%.2f", premium));
+
         try {
             PreparedStatement ps = getConnection().prepareStatement(sql);
             ps.setString(1, policyNumber);
@@ -137,7 +139,7 @@ public class Vehicle extends Policy {
             ps.setString(6, fuelType);
             ps.setDouble(7, price);
             ps.setString(8, color);
-            ps.setDouble(9, premium);
+            ps.setDouble(9, totalPremium);
             int result = ps.executeUpdate();
             if (result == 1) {
                 System.out.print("->\t");

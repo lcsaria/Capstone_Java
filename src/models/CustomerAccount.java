@@ -26,6 +26,7 @@ public class CustomerAccount {
     static Validation valid = new Validation();
     static Connection connection = null;
     static Scanner scan = new Scanner(System.in);
+    static Helper put = new Helper();
     private String accountNumber;
     private String lastName;
     private String firstName;
@@ -44,62 +45,6 @@ public class CustomerAccount {
     public void close() throws SQLException {
         System.out.println("Thank you!!");
         connection.close();
-    }
-
-    public void menu() {
-        System.out.println("\nAUTOMOBILE INSURANCE POLICY AND CLAIMS ADMINISTRATION SYSTEM");
-        System.out.println("[1] Create a new Customer Account");
-        System.out.println("[2] Get a policy quote and buy the policy");
-        System.out.println("[3] Cancel a specific policy");
-        System.out.println("[4] File an accident claim against a policy");
-        System.out.println("[5] Search for a Customer account ");
-        System.out.println("[6] Search for and display a specific policy");
-        System.out.println("[7] Search for and display a specific claim");
-        System.out.println("[-1] Exit the PAS System");
-        System.out.print("Enter your choice:\t");
-    }
-
-    // DELAY IN
-    public void delay(int second) {
-        try {
-            Thread.sleep(second);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // USE FOR TABLE IN 5.0 SEARCH ACCOUNT
-    public void bar() {
-        for (int count = 0; count <= 104; count++) {
-            if (count == 0 || count == 104) {
-                System.out.print("+");
-            } else {
-                System.out.print("-");
-            }
-        }
-        System.out.println();
-    }
-
-    public void bar2() {
-        for (int count = 0; count <= 84; count++) {
-            if (count == 0 || count == 84) {
-                System.out.print("+");
-            } else {
-                System.out.print("-");
-            }
-        }
-        System.out.println();
-    }
-
-    public void bar3() {
-        for (int count = 0; count <= 121; count++) {
-            if (count == 0 || count == 121) {
-                System.out.print("+");
-            } else {
-                System.out.print("-");
-            }
-        }
-        System.out.println();
     }
 
     // ---> FUNCTIONS
@@ -124,7 +69,7 @@ public class CustomerAccount {
             if (input.isBlank()) {
                 System.out.println("Account Number is empty!\n");
             } else {
-                delay(1000);
+                put.delay(1000);
                 if (input.matches("[0-9]{4}")) {
                     if (validateAccount(input) == 0) { // ==> GO TO 1.1.1
                         this.accountNumber = input;
@@ -175,18 +120,18 @@ public class CustomerAccount {
             ResultSet result = ps.executeQuery();
 
             if (result.next()) {
-                delay(1000);
+                put.delay(1000);
                 System.out.println("\nA PERSON IS ALREADY USING YOUR DETAILS. PLEASE TRY AGAIN.");
             } else {
                 do {
                     System.out.print("\nDO YOU WANT TO CREATE ACCOUNT USING THIS DATA? [Y/N]:\t\t");
                     String input = scan.nextLine();
                     if (input.equalsIgnoreCase("Y")) {
-                        delay(1000);
+                        put.delay(1000);
                         submitCustomerAccount(); // GO TO 1.3
                         flag = true;
                     } else if (input.equalsIgnoreCase("N")) {
-                        delay(1000);
+                        put.delay(1000);
                         System.out.println("\nDATA NOT SAVED!!");
                         flag = true;
                     } else {
@@ -227,7 +172,7 @@ public class CustomerAccount {
         this.firstName = valid.validateString("First Name:", "[a-zA-Z\\s]+");
         this.lastName = valid.validateString("Last Name:", "[a-zA-Z\\s]+");
 
-        delay(1000);
+        put.delay(1000);
         String sql = "SELECT * from customer_account where firstName=? and lastName=?";
         try {
             PreparedStatement ps = getConnection().prepareStatement(sql);
@@ -245,7 +190,7 @@ public class CustomerAccount {
 
                     System.out.printf("\nAccount #%s exist.\n", acct);
                     getAccountInformation(acct, first, last, add); // GO TO 5.3
-                    delay(1000);
+                    put.delay(1000);
                     getPolicyOwned(acct);
                 } while (result.next());
             } else {
@@ -262,11 +207,11 @@ public class CustomerAccount {
     public void getAccountInformation(String accountNumber, String first, String last, String address) {
         String format = "|%1$-20s|%2$-20s|%3$-20s|%4$-40s|\n";
         String acctNumber = String.format("%04d", Integer.parseInt(accountNumber));
-        bar();
+        put.createBar("customerAccount");
         System.out.printf(format, " Account Number", " First Name", " Last Name", " Address");
-        bar();
+        put.createBar("customerAccount");
         System.out.printf(format, acctNumber, first, last, address);
-        bar();
+        put.createBar("customerAccount");
     }
 
     // 5.4 GET POLICY OWNED
@@ -282,18 +227,18 @@ public class CustomerAccount {
 
             if (result.next()) {
                 System.out.printf("\nPOLICY OWNED BY ACCOUNT #%s\n", acct);
-                bar2();
+                put.createBar("customerAccount.policy");
                 System.out.printf(formatHead, " Policy #", " Effective Date", " Expiration Date", "Status");
-                bar2();
+                put.createBar("customerAccount.policy");
                 do {
                     String policyNo = String.format("%06d", result.getInt("policyNumber"));
                     String effectiveDate = result.getString("effectiveDate");
                     String expireDate = result.getString("expirationDate");
                     String status = (result.getInt("status") == 0) ? "NOT ACTIVE" : "ACTIVE";
                     System.out.printf(formatBody, policyNo, effectiveDate, expireDate, status);
-                    bar2();
+                    put.createBar("customerAccount.policy");
                 } while (result.next());
-                delay(1000);
+                put.delay(1000);
                 getPolicyHolder(acct);
             } else {
                 System.out.println("NO POLICY OWNED.\n");
@@ -310,10 +255,10 @@ public class CustomerAccount {
     public void getPolicyHolder(String acct) {
         String format = "|%1$-15s|%2$-15s|%3$-15s|%4$-30s|%5$-20s|%6$-20s|\n";
         System.out.println("\nPOLICY HOLDER ASSOCIATED TO ACCOUNT #" + acct);
-        bar3();
+        put.createBar("customerAccount.policyHolder");
         System.out.printf(format, " Policy #", " First Name", " Last Name", " Address", " Driver License #",
                 " Date Issued"); // header
-        bar3();
+        put.createBar("customerAccount.policyHolder");
 
         String sql = "SELECT * from policy_holder where acctNo = ?";
         try {
@@ -331,7 +276,7 @@ public class CustomerAccount {
                     String date = result.getString("dateIssued");
 
                     System.out.printf(format, policyNo, first, last, addr, licenseNo, date);
-                    bar3();
+                    put.createBar("customerAccount.policyHolder");
                 } while (result.next());
             } else {
                 System.out.println("\nNO POLICY HOLDER ASSOCIATED TO SAID ACCOUNT.");
