@@ -7,7 +7,7 @@
  * @author Lmarl Saria
  * 
  * Date Created: June 28, 2022
- * Date Modified: September 14, 2022
+ * Date Modified: December 19, 2022
  * 
  * -- refacotring (user validation)
  * -- add new function
@@ -28,20 +28,13 @@ public class PolicyHolder extends Policy {
 	private String driverLicenseNumber;
 	static String dateIssued;
 
-	// --> INPUT (USER VALIDATION)
-	/*
-	 * in this method, every input has name and pattern, it will find their
-	 * respective
-	 * case via switch, after the user prompt the enter input, it will validate
-	 */
-
 	// 2.3.4.1.1a IF THE POLICY HOLDER is ACCOUNT OWNER
 	public void setPolicyHolder(String policyNumber, String accountNumber) {
 		this.policyNumber = policyNumber;
 		System.out.println("\nPOLICY HOLDER");
 		fetchOwnerInformation(accountNumber); // GO TO 2.3.4.1a.1
 		this.driverLicenseNumber = valid.validateString("Driver License Number: ", "^.{0,255}$");
-		this.dateIssued = valid.validateString("Date Issued: ", "[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}");
+		this.dateIssued = valid.validateDate("Date Issued: ", "^\\d{4}-\\d{2}-\\d{2}$");
 	}
 
 	// 2.3.4.1.1b IF THE POLICY HOLDER is DEPENDENT
@@ -52,7 +45,7 @@ public class PolicyHolder extends Policy {
 		this.lastName = valid.validateString("Last Name: ", "[a-zA-Z\s]+");
 		this.address = valid.validateString("Address: ", "[a-zA-Z\s]+");
 		this.driverLicenseNumber = valid.validateString("Driver License Number: ", "^.{0,255}$");
-		this.dateIssued = valid.validateString("Date Issued: ", "[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}");
+		this.dateIssued = valid.validateDate("Date Issued: ", "^\\d{4}-\\d{2}-\\d{2}$");
 	}
 
 	// 2.3.4.1a.1 FETCH OWNER INFORMATION
@@ -66,9 +59,9 @@ public class PolicyHolder extends Policy {
 				this.firstName = result.getString("firstName");
 				this.lastName = result.getString("lastName");
 				this.address = result.getString("address");
-				System.out.printf("First Name:\t\t\t%s\n", firstName);
-				System.out.printf("Last Name:\t\t\t%s\n", lastName);
-				System.out.printf("Address:\t\t\t%s\n", address);
+				System.out.printf("%-35s%s\n", "First Name:", firstName);
+				System.out.printf("%-35s%s\n", "Last Name:", lastName);
+				System.out.printf("%-35s%s\n", "Address:", address);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

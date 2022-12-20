@@ -1,19 +1,29 @@
 /**
+  * Java Course 4, Module 3
  * 
+ * CAPSTONE PROJECT
+ * Validation Class
+ * 
+ * @author Lmarl Saria
+ * 
+ * Date Created: October 10, 2022
+ * Date Modified: December 19, 2022
+ * 
+ * -- update comments
+ * -- refactoring (adjustment)
  */
 package models;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-/**
- * @author LmarlSaria
- *
- */
+
 public class Validation {
     static Scanner scan = new Scanner(System.in);
     private String input;
 
+    // check string with valid pattern
     public String validateString(String message, String pattern) {
         boolean isValid = false;
         do {
@@ -21,18 +31,19 @@ public class Validation {
             String enter = scan.nextLine();
 
             if (enter.isBlank()) {
-                System.out.println("Empty input. Try again\n");
+                System.out.println("EMPTY INPUT. TRY AGAIN\n");
             } else if (!enter.matches(pattern)) {
-                System.out.println("Invalid input. Try again\n");
+                System.out.println("INVALID INPUT. TRY AGAIN\n");
             } else {
                 this.input = enter;
                 isValid = true;
             }
         } while (!isValid);
+
         return input;
     }
 
-    // check if effective date is not later than today
+    // check valid date
     public String validateDate(String message, String pattern) {
         boolean isValid = false;
 
@@ -41,20 +52,17 @@ public class Validation {
             String enter = scan.nextLine();
 
             if (enter.isBlank()) {
-                System.out.println("Empty input. Try again\n");
+                System.out.println("EMPTY INPUT. TRY AGAIN\n");
             } else if (!enter.matches(pattern)) {
-                System.out.println("Invalid input. Try again\n");
+                System.out.println("INVALID INPUT. ALWAYS WRITE LEADING ZEROS. TRY AGAIN\n");
             } else {
                 // validate Date (to be done)
-                LocalDate dateEntered = LocalDate.parse(String.valueOf(enter));
-                if (LocalDate.now().compareTo(dateEntered) <= 0) {
-                    this.input = enter;
-                    isValid = true;
-                } else {
-                    System.out.println("Invalid date. It should be today onwards.\n");
-                }
+                LocalDate dateEntered = LocalDate.parse(enter, DateTimeFormatter.ISO_DATE);
+                this.input = String.valueOf(dateEntered);
+                isValid = true;
             }
         } while (!isValid);
+
         return input;
     }
 

@@ -47,7 +47,7 @@ public class RatingEngine {
 	// The setDLX() method computes the number of years since driver license was
 	// first issued.
 	public double setDLX() {
-		String dateIssued = PolicyHolder.dateIssued;
+		String dateIssued = ph.dateIssued;
 		String[] date = dateIssued.split("-"); // split the date by "-" (YYYY-MM-DD)
 		int year = Integer.parseInt(date[0]); // YYYY
 		int month = Integer.parseInt(date[1]); // MM

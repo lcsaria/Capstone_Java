@@ -7,7 +7,7 @@
  * @author Lmarl Saria
  * 
  * Date Created: June 28, 2022
- * Date Modified: September 14, 2022
+ * Date Modified: December 19, 2022
  * 
  * -- edit comments
  * -- refactoring (add user validation)
@@ -18,11 +18,11 @@
 package models;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Policy extends CustomerAccount {
-	static PolicyHolder ph = new PolicyHolder();
-	static RatingEngine re = new RatingEngine();
 	private String accountNumber;
 	private String policyNumber;
 	private String effectiveDate;
@@ -31,6 +31,9 @@ public class Policy extends CustomerAccount {
 	private String option;
 	private int vehicle;
 	private double premium;
+
+	static PolicyHolder ph = new PolicyHolder();
+	static RatingEngine re = new RatingEngine();
 	static ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
 
 	public void inputPolicyNumber() {
@@ -106,14 +109,14 @@ public class Policy extends CustomerAccount {
 					delay(1000);
 					return 0;
 				} else {
-					System.out.printf("\nAccount #%s exist.\n", accountNo);
+					System.out.printf("\nACCOUNT #%s EXIST.\n", accountNo);
 					delay(1000);
 					return count;
 				}
 			}
 			return count;
 		} catch (SQLException e) {
-			System.out.println("\nAccount doesn't exist. Please create an account!!");
+			System.out.println("\nACCOUNT DOESN'T EXIST. PLEASE CREATE AN ACCOUNT!!");
 			delay(1000);
 			return 0;
 		}
@@ -124,7 +127,8 @@ public class Policy extends CustomerAccount {
 		System.out.println("\nCREATING POLICY");
 		inputPolicyNumber();
 		// 2.2.2 ENTER EFFECTIVE DATE
-		this.effectiveDate = valid.validateDate("Effective Date (YYYY-MM-DD): ", "[0-9]{4}-[0-9]{2}-[0-9]{2}");
+		this.effectiveDate = valid.validateDate("Effective Date (YYYY-MM-DD): ",
+				"^\\d{4}-\\d{2}-\\d{2}$");
 		getExpirationDate(); // GO TO 2.2.3
 		assignPolicyHolder();
 		if (option.equals("1")) {
@@ -152,7 +156,7 @@ public class Policy extends CustomerAccount {
 		c.set(Calendar.DAY_OF_MONTH, day);
 		c.add(Calendar.MONTH, 6); // add date by 6 months
 
-		String expire = String.format("%d-%d-%d", c.get(Calendar.YEAR), (c.get(Calendar.MONTH) + 1),
+		String expire = String.format("%d-%02d-%02d", c.get(Calendar.YEAR), (c.get(Calendar.MONTH) + 1),
 				c.get(Calendar.DATE));
 		this.expirationDate = expire;
 		System.out.printf("%-35s%s\n", "Expiration Date (YYYY-MM-DD):", expirationDate);
@@ -172,8 +176,8 @@ public class Policy extends CustomerAccount {
 		int no = Integer.parseInt(scan.nextLine());
 		this.vehicle = no;
 		for (int count = 0; count < this.vehicle; count++) {
-			Vehicle vehicle = new Vehicle();
-			vehicles.add(vehicle);
+			Vehicle newVehicle = new Vehicle();
+			vehicles.add(newVehicle);
 			vehicles.get(count).setVehicle(policyNumber, count + 1); // GO TO 2.4.0
 		}
 	}
@@ -182,17 +186,17 @@ public class Policy extends CustomerAccount {
 	public void confirmPolicy() {
 		boolean flag = false;
 		do {
-			System.out.print("\nDo you want to save using this data? [Y/N]:\t\t");
+			System.out.print("\nDO YOU WANT TO SAVE USING THIS DATA? [Y/N]:\t\t");
 			String input = scan.nextLine();
 			if (input.equalsIgnoreCase("Y")) {
 				submitPolicy(); // GO TO 1.2
 				flag = true;
 			} else if (input.equalsIgnoreCase("N")) {
 				delay(1000);
-				System.out.println("\nData Failed to save!!");
+				System.out.println("\nDATA FAILED TO SAVE!!");
 				break;
 			} else {
-				System.out.println("Invalid choice");
+				System.out.println("INVALID CHOICE!");
 			}
 		} while (flag == false);
 	}
@@ -225,10 +229,10 @@ public class Policy extends CustomerAccount {
 
 			int result = ps.executeUpdate();
 			// ternary
-			String message = (result == 1) ? String.format("Policy #%s Saved!\n", policyNumber) : "Something wrong!\n";
+			String message = (result == 1) ? String.format("POLICY #%s SAVED!\n", policyNumber) : "SOMETHING WRONG!\n";
 			System.out.print(message);
 		} catch (SQLException e) {
-			System.out.println("Something wrong!\n");
+			System.out.println("SOMETHING WRONG!\n");
 		}
 	}
 
@@ -259,7 +263,7 @@ public class Policy extends CustomerAccount {
 	// 3.0 SEARCH POLICY TO BE CANCEL
 	public void cancelPolicy() {
 		System.out.println("\nCANCEL POLICY");
-		this.policyNumber = valid.validateString("Enter policy number (XXXXXX):", "[0-9]{6}");
+		this.policyNumber = valid.validateString("Policy Number (XXXXXX):", "[0-9]{6}");
 		getPolicyInformation(); // GO TO 3.1
 	}
 
@@ -368,7 +372,7 @@ public class Policy extends CustomerAccount {
 					String effective = result.getString("effectiveDate");
 					String expireDate = result.getString("expirationDate");
 					String holder = result.getString("policyHolder");
-					int vehicles = result.getInt("vehicles");
+					int totalVehicles = result.getInt("vehicles");
 					Double prem = result.getDouble("premium");
 					Boolean status = result.getBoolean("status");
 
@@ -389,14 +393,15 @@ public class Policy extends CustomerAccount {
 					System.out.printf(formatHead, "Effective Date", "Expiration Date", "Policy Holder", "Vehicles",
 							"Premium Charge", "Status");
 					createBar("policy"); // GO TO 6.A.1
-					System.out.printf(formatBody, effective, expireDate, holder, vehicles, prem,
+					System.out.printf(formatBody, effective, expireDate, holder,
+							totalVehicles, prem,
 							(status ? "ACTIVE" : "NOT ACTIVE"));
 					createBar("policy");
 					delay(1000);
 					System.out.println("\nPOLICY HOLDER");
 					showPolicyHolder(policyNo); // GO TO 6.3
 					delay(1000);
-					System.out.println((vehicles == 1) ? "\nVEHICLE" : "\nVEHICLES"); // conditional formatting
+					System.out.println((totalVehicles == 1) ? "\nVEHICLE" : "\nVEHICLES"); // conditional formatting
 					showVehicle(policyNo); // GO TO 6.4
 					createBar("vehicle");
 				} while (result.next());
