@@ -29,6 +29,7 @@ public class Helper {
         System.out.print("Enter your choice:\t");
     }
 
+    // give delay by x second
     public void delay(int second) {
         try {
             Thread.sleep(second);
@@ -37,6 +38,7 @@ public class Helper {
         }
     }
 
+    // for creating table
     public void createBar(String type) {
         final int LENGTH_POLICY = 126;
         final int LENGTH_POLICY_HOLDER = 125;
