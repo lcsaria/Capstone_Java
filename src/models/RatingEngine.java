@@ -41,7 +41,7 @@ public class RatingEngine {
 		this.vp = premium;
 		setVPF(year);
 		compute();
-		return (float) calculatedPremium;
+		return calculatedPremium;
 	}
 
 	// The setDLX() method computes the number of years since driver license was

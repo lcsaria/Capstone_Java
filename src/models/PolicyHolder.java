@@ -26,7 +26,7 @@ public class PolicyHolder extends Policy {
 	private String lastName;
 	private String address;
 	private String driverLicenseNumber;
-	static String dateIssued;
+	public static String dateIssued;
 
 	// 2.3.4.1.1a IF THE POLICY HOLDER is ACCOUNT OWNER
 	public void setPolicyHolder(String policyNumber, String accountNumber) {
@@ -81,8 +81,7 @@ public class PolicyHolder extends Policy {
 			ps.setString(6, dateIssued);
 			ps.setInt(7, acctNo); // additional column
 			int result = ps.executeUpdate();
-			System.out.println((result == 1) ? "\nPolicy Holder Saved!" : "Something wrong!\n"); // using conditional
-																									// formatting
+			System.out.println((result == 1) ? "\nPolicy Holder Saved!" : "Something wrong!\n"); 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

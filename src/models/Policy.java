@@ -7,10 +7,10 @@
  * @author Lmarl Saria
  * 
  * Date Created: June 28, 2022
- * Date Modified: December 19, 2022
+ * Date Modified: December 28, 2022
  * 
  * -- edit comments
- * -- refactoring (add user validation)
+ * -- refactoring (add user validation, add try and catch)
  * -- enhanced switch (JAVA 17)
  * -- using conditional formatting
  */
@@ -18,8 +18,6 @@
 package models;
 
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Policy extends CustomerAccount {
@@ -44,15 +42,20 @@ public class Policy extends CustomerAccount {
 			input = scan.nextLine();
 
 			put.delay(1000);
-			if (input.isBlank()) {
-				System.out.println("Policy number is empty!\n");
-			} else if (!input.matches("[0-9]{6}")) {
-				System.out.println("Invalid input!\n");
-			} else if (validatePolicyNumber(input) != 0) {
-				System.out.println("Policy #" + input + " exists!!\n");
-			} else {
-				this.policyNumber = input;
+			try {
+				if (input.isBlank()) {
+					System.out.println("Policy number is empty!\n");
+				} else if (!input.matches("[0-9]{6}")) {
+					System.out.println("Invalid input!\n");
+				} else if (validatePolicyNumber(input) != 0) {
+					System.out.println("Policy #" + input + " exists!!\n");
+				} else {
+					this.policyNumber = input;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+
 		} while (this.policyNumber == null);
 	}
 
@@ -85,8 +88,8 @@ public class Policy extends CustomerAccount {
 	public void create() {
 		System.out.println("\nGET A POLICY QUOTE AND BUY THE POLICY");
 		this.accountNumber = valid.validateString("Account Number: ", "[0-9]{1,4}");
-		int search = searchCustomerAccount(this.accountNumber); // GO TO 2.1
-		if (search != 0) {
+		int searchAccountNumber = searchCustomerAccount(this.accountNumber); // GO TO 2.1
+		if (searchAccountNumber != 0) {
 			createPolicy(this.accountNumber); // GO TO 2.2
 		}
 	}
@@ -186,22 +189,33 @@ public class Policy extends CustomerAccount {
 	public void confirmPolicy() {
 		boolean flag = false;
 		do {
-			System.out.print("\nDO YOU WANT TO SAVE USING THIS DATA? [Y/N]:\t\t");
-			String input = scan.nextLine();
-			if (input.equalsIgnoreCase("Y")) {
-				submitPolicy(); // GO TO 1.2
-				flag = true;
-			} else if (input.equalsIgnoreCase("N")) {
-				put.delay(1000);
-				System.out.println("\nDATA FAILED TO SAVE!!");
-				break;
-			} else {
-				System.out.println("INVALID CHOICE!");
+			try {
+				System.out.print("\nDO YOU WANT TO SAVE USING THIS DATA? [Y/N]:\t\t");
+				String input = scan.nextLine();
+				if (input.equalsIgnoreCase("Y")) {
+					submitPolicy(); // GO TO 1.2
+					flag = true;
+				} else if (input.equalsIgnoreCase("N")) {
+					put.delay(1000);
+					System.out.println("\nDATA FAILED TO SAVE!!");
+					break;
+				} else {
+					System.out.println("INVALID CHOICE!");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		} while (flag == false);
 	}
 
-	// 2.6 SUBMIT POLICY
+	/*
+	 * 2.6 SUBMIT POLICY
+	 * Step 0: get account number
+	 * Step 1: submit policy holder
+	 * Step 2: submit vehicles (via for loop)
+	 * Step 3: get total premium
+	 * Step 4: sumbit policy
+	 */
 	public void submitPolicy() {
 		int acctNo = Integer.parseInt(accountNumber);
 		try {
@@ -210,10 +224,10 @@ public class Policy extends CustomerAccount {
 
 			for (int count = 0; count < this.vehicle; count++) {
 				put.delay(1000);
-				vehicles.get(count).submitVehicle(); // ==> GO TO 2.6.2
+				vehicles.get(count).submitVehicle();
 				System.out.printf("%d of %d VEHICLE SAVED.\n", count + 1, this.vehicle);
 			}
-			this.premium = totalPremium(); // ==> GO TO 2.6.3
+			this.premium = totalPremium();
 			put.delay(1000);
 			String sql = "INSERT into policy VALUES (?,?,?,?,?,?,?,?)";
 			PreparedStatement ps = getConnection().prepareStatement(sql);
@@ -328,7 +342,7 @@ public class Policy extends CustomerAccount {
 				System.out.println("\nCancel failed.");
 				flag = true;
 			} else {
-				System.out.println("Invalid Input.");
+				System.out.println("INVALID INPUT.");
 			}
 		} while (flag == false);
 	}
