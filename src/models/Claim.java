@@ -141,7 +141,7 @@ public class Claim extends Policy {
 				System.out.println("Invalid choice!");
 			}
 
-		} while (isSubmit == false);
+		} while (!isSubmit); //simplify
 	}
 
 	// 4.4 SUBMIT CLAIM

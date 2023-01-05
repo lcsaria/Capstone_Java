@@ -104,11 +104,6 @@ public class Vehicle extends Policy {
                 break;
             }
         }
-
-        flag = false;
-        type = "";
-        pattern = "";
-        choice = "";
     }
 
     public void setType(String input) {

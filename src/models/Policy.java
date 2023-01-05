@@ -38,7 +38,7 @@ public class Policy extends CustomerAccount {
 		String input = null;
 
 		do {
-			System.out.printf("%-35s", "Enter policy number (XXXXXX):");
+			System.out.printf("%-35s", "Enter policy number (xxxxxx):");
 			input = scan.nextLine();
 
 			put.delay(1000);
@@ -214,7 +214,7 @@ public class Policy extends CustomerAccount {
 	 * Step 1: submit policy holder
 	 * Step 2: submit vehicles (via for loop)
 	 * Step 3: get total premium
-	 * Step 4: sumbit policy
+	 * Step 4: submit policy
 	 */
 	public void submitPolicy() {
 		int acctNo = Integer.parseInt(accountNumber);
@@ -344,7 +344,7 @@ public class Policy extends CustomerAccount {
 			} else {
 				System.out.println("INVALID INPUT.");
 			}
-		} while (flag == false);
+		} while (!flag);
 	}
 
 	// 3.4 CHANGE the EXPIRATION DATE to today, THEN set STATUS to 0
@@ -388,7 +388,7 @@ public class Policy extends CustomerAccount {
 					String holder = result.getString("policyHolder");
 					int totalVehicles = result.getInt("vehicles");
 					Double prem = result.getDouble("premium");
-					Boolean status = result.getBoolean("status");
+					boolean status = result.getBoolean("status");
 
 					// if expiration date is today date, the said policy is NOT ACTIVE.
 					if (!status) {
