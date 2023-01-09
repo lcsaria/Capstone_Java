@@ -16,8 +16,8 @@ package models;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
-
 
 public class Validation {
     static Scanner scan = new Scanner(System.in);
@@ -26,7 +26,8 @@ public class Validation {
     // check string with valid pattern
     public String validateString(String message, String pattern) {
         boolean isValid = false;
-        do {
+
+        while (!isValid) {
             System.out.printf("%-35s", message);
             String enter = scan.nextLine();
 
@@ -35,10 +36,10 @@ public class Validation {
             } else if (!enter.matches(pattern)) {
                 System.out.println("INVALID INPUT. TRY AGAIN\n");
             } else {
-                this.input = enter;
+                input = enter;
                 isValid = true;
             }
-        } while (!isValid);
+        }
 
         return input;
     }
@@ -47,7 +48,7 @@ public class Validation {
     public String validateDate(String message, String pattern) {
         boolean isValid = false;
 
-        do {
+        while (!isValid) {
             System.out.printf("%-35s", message);
             String enter = scan.nextLine();
 
@@ -56,14 +57,25 @@ public class Validation {
             } else if (!enter.matches(pattern)) {
                 System.out.println("INVALID INPUT. ALWAYS WRITE LEADING ZEROS. TRY AGAIN\n");
             } else {
-                // validate Date (to be done)
-                LocalDate dateEntered = LocalDate.parse(enter, DateTimeFormatter.ISO_DATE);
-                this.input = String.valueOf(dateEntered);
-                isValid = true;
+                LocalDate dateEntered = parseDate(enter);
+                if (dateEntered != null) {
+                    input = String.valueOf(dateEntered);
+                    isValid = true;
+                } else {
+                    System.out.println("INVALID DATE. TRY AGAIN\n");
+                }
             }
-        } while (!isValid);
+        }
 
         return input;
+    }
+
+    private LocalDate parseDate(String input) {
+        try {
+            return LocalDate.parse(input, DateTimeFormatter.ISO_DATE);
+        } catch (DateTimeParseException e) {
+            return null;
+        }
     }
 
 }

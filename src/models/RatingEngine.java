@@ -36,7 +36,7 @@ public class RatingEngine {
 	 * VPF = vehicle price factor
 	 * DLX = num of years since driver license was first issued
 	 */
-	public float computedPremium(double premium, int year) {
+	public double computedPremium(double premium, int year) {
 		this.dlx = setDLX();
 		this.vp = premium;
 		setVPF(year);
@@ -84,8 +84,8 @@ public class RatingEngine {
 	// The compute() method computes the total amount.
 	public void compute() {
 		// add casting
-		float total = (float) ((vp * vpf) + ((vp / 100) / dlx));
-		this.calculatedPremium = total;
+		double total = ((vp * vpf) + ((vp / 100.0) / dlx));
+		this.calculatedPremium = (float) total;
 	}
 
 	// It gets the premium
