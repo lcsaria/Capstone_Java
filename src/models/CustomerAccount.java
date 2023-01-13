@@ -62,6 +62,7 @@ public class CustomerAccount {
     // 1.1.0 INPUT ACCOUNT NUMBER
     public void inputAccountNumber() {
         String input;
+
         do {
             System.out.printf("%-35s", "Account Number:");
             input = scan.nextLine();
@@ -70,14 +71,15 @@ public class CustomerAccount {
                 System.out.println("Account Number is empty!\n");
             } else {
                 put.delay(1000);
-                if (input.matches("[0-9]{4}")) {
-                    if (validateAccount(input) == 0) { // ==> GO TO 1.1.1
-                        this.accountNumber = input;
-                    } else {
-                        System.out.printf("Account #%s exists!\n\n", input);
-                    }
+                if (!input.matches("[0-9]{4}")) {
+                    System.out.println("INVALID INPUT!\n");
+
                 } else {
-                    System.out.println("Invalid input!\n");
+                    if (validateAccount(input) != 0) { // ==> GO TO 1.1.1
+                        System.out.printf("ACCOUNT #%S EXISTS!\n\n", input);
+                    } else {
+                        this.accountNumber = input;
+                    }
                 }
 
             }
