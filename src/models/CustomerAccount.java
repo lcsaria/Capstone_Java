@@ -227,7 +227,10 @@ public class CustomerAccount {
 
             ResultSet result = ps.executeQuery();
 
-            if (result.next()) {
+            if (!result.next()) {
+                System.out.println("NO POLICY OWNED.\n");
+                System.out.println("NO POLICY HOLDER ASSOCIATED TO SAID ACCOUNT.\n");
+            } else {
                 System.out.printf("\nPOLICY OWNED BY ACCOUNT #%s\n", acct);
                 put.createBar("customerAccount.policy");
                 System.out.printf(formatHead, " Policy #", " Effective Date", " Expiration Date", "Status");
@@ -242,9 +245,6 @@ public class CustomerAccount {
                 } while (result.next());
                 put.delay(1000);
                 getPolicyHolder(acct);
-            } else {
-                System.out.println("NO POLICY OWNED.\n");
-                System.out.println("NO POLICY HOLDER ASSOCIATED TO SAID ACCOUNT.\n");
             }
 
         } catch (SQLException e) {
@@ -268,7 +268,9 @@ public class CustomerAccount {
             ps.setString(1, acct);
             ResultSet result = ps.executeQuery();
 
-            if (result.next()) {
+            if (!result.next()) {
+                System.out.println("\nNO POLICY HOLDER ASSOCIATED TO SAID ACCOUNT.");
+            } else {
                 do {
                     String policyNo = String.format("%06d", result.getInt("policyNumber"));
                     String first = result.getString("firstName");
@@ -280,8 +282,6 @@ public class CustomerAccount {
                     System.out.printf(format, policyNo, first, last, addr, licenseNo, date);
                     put.createBar("customerAccount.policyHolder");
                 } while (result.next());
-            } else {
-                System.out.println("\nNO POLICY HOLDER ASSOCIATED TO SAID ACCOUNT.");
             }
 
         } catch (SQLException e) {
